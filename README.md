@@ -98,3 +98,4 @@ void loop() {
 
   delay(5000); // Esperar 5 segundos antes de realizar la próxima consulta
 }
+# apiPurificadora
