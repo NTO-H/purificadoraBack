@@ -1,4 +1,4 @@
-const Usuario = require("../models/Usuario");
+const {Usuario} = require("../models/Usuario");
 require("../routes/usuario");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -7,13 +7,13 @@ const bcrypt = require("bcryptjs");
 
 exports.Login = async (req, res) => {
   try {
-    const { correo, password } = req.body;
-// eslint-disable-next-line no-console
+    const { correo, pass } = req.body;
     const usuario = await Usuario.findOne({ correo });
-
     if (!usuario) return res.status(401).send("El correo no existe");
-
-    const isPasswordValid = await bcrypt.compare(password, usuario.password);
+    // if (usuario) return res.status(200).send("El correo  existe");
+    console.log("Password recibido:", pass);
+    const isPasswordValid = await bcrypt.compare(pass, usuario.password);
+    
     if (!isPasswordValid) return res.status(401).send("Contraseña incorrecta");
 
     // Verificar si el usuario tiene un rol
@@ -31,18 +31,19 @@ exports.Login = async (req, res) => {
   }
 };
 
+
+
+
 exports.perfilUsuario = async (req, res) => {
+  
   try {
     const correo = req.params.correo;
-  
     // Buscar el usuario por correo en la base de datos
     const usuario = await Usuario.findOne({ correo });
-
     // Verificar si el usuario existe
     if (!usuario) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
-
     // Devolver los datos del perfil del usuario
     return res.status(200).json({ datos: usuario });
 
@@ -50,6 +51,7 @@ exports.perfilUsuario = async (req, res) => {
     console.error(error);
     return res.status(500).json({ mensaje: 'Error en el servidor' });
   }
+
 };
 
 

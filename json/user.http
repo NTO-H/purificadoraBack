@@ -1,0 +1,20 @@
+
+
+# crear usuario
+//POST http://localhost:4000/usuarios/signUp
+{
+    "pass": "contraseña123",
+    "nombre": "adm",
+    "telefono": "1234567890",
+    "correo": "correo@ejemplo.com",
+    "pregunta": "¿Cuál es tu pregunta de seguridad?",
+    "respuesta": "Respuesta de seguridad"
+  }
+  
+
+  # login
+//POST http://localhost:4000/usuarios/signIn
+{
+  "pass": "contraseña123",
+  "correo": "correo@ejemplo.com"
+}

@@ -30,8 +30,8 @@ router.post('/correo',usuarioController.BuscaUsuarioByCorreo)
 router.get('/miPerfil/:correo',usuarioController.perfilUsuario)
 router.get('/getUsuarios',usuarioController.obtenerUsuarios)
 router.post('/respuesta',usuarioController.BuscaUsuarioByPreguntayRespuesta)
-router.post('/singUp',usuarioController.crearUsuario);
-router.post('/singIn',usuarioController.Login);
+router.post('/signUp',usuarioController.crearUsuario);
+router.post('/signIn',usuarioController.Login);
 router.get('/',usuarioController.obtenerUsuarios);
 router.get('/:id',usuarioController.obtenerUsuarioById)
 module.exports=router;
