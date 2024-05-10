@@ -26,8 +26,9 @@ exports.Login = async (req, res) => {
     const token = jwt.sign({ _id: usuario._id, rol: usuario.rol }, "secret");
     return res.status(200).json({ token, rol: usuario.rol });
   } catch (error) {
-    console.log(error);
+    console.log("ohh no :",error);
     return res.status(500).send("Error en el servidor: " + error);
+    
   }
 };
 
