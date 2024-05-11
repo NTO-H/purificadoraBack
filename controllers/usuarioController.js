@@ -166,7 +166,7 @@ exports.crearUsuario = async (req, res) => {
     let nombre = req.body.nombre;
     console.log("nombre=> :", nombre); // Agrega este registro
     let telefono = req.body.telefono;
-    let correo = req.body.email; // Cambio de 'correo' a 'email'
+    let email = req.body.email; // Cambio de 'email' a 'email'
     let pregunta = req.body.pregunta;
     let respuesta = req.body.respuesta;
     let longitud = req.body.longitud; // Agregar longitud
@@ -175,13 +175,13 @@ exports.crearUsuario = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password1, salt);
-    const record = await Usuario.findOne({ correo: correo });
+    const record = await Usuario.findOne({ email: email });
     if (record) {
-      return res.status(400).send({ message: "El correo ya está registrado" });
+      return res.status(400).send({ message: "El email ya está registrado" });
     }
     const usuario = new Usuario({
       nombre: nombre,
-      email: correo,
+      email: email,
       telefono: telefono,
       pregunta: pregunta,
       respuesta: respuesta,
