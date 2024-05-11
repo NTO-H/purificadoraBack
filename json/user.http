@@ -3,14 +3,20 @@
 # crear usuario
 //POST http://localhost:4000/usuarios/signUp
 {
-    "pass": "contraseña123",
-    "nombre": "adm",
-    "telefono": "1234567890",
-    "correo": "correo@ejemplo.com",
-    "pregunta": "¿Cuál es tu pregunta de seguridad?",
-    "respuesta": "Respuesta de seguridad"
-  }
-  
+  "nombre": "adm",
+  "email": "correo@ejemplo.com",
+  "password1": "contraseña123",
+  "passwordConfirmar": "contraseña123",
+  "longitud": "-98.52107347143587",
+  "latitud": "21.18937867390761",
+  "telefono": "1234567890",
+  "numCasa": "valor_de_numero_de_casa"
+}
+
+//21.18937867390761, -98.52107347143587
+
+  .
+
 
   # login
 //POST http://localhost:4000/usuarios/signIn

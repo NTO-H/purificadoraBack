@@ -161,28 +161,34 @@ exports.EstadoUsuario = async (req, res) => {
 exports.crearUsuario = async (req, res) => {
   try {
     console.log("req.body:", req.body); // Agrega este registro
-    let password = req.body.pass;
-    console.log("password=>:", password); // Agrega este registro
-    // let password = req.body.password;
+    let password1 = req.body.password1;
+    console.log("password=>:", password1); // Agrega este registro
     let nombre = req.body.nombre;
     console.log("nombre=> :", nombre); // Agrega este registro
     let telefono = req.body.telefono;
-    let correo = req.body.correo;
+    let correo = req.body.email; // Cambio de 'correo' a 'email'
     let pregunta = req.body.pregunta;
     let respuesta = req.body.respuesta;
+    let longitud = req.body.longitud; // Agregar longitud
+    let latitud = req.body.latitud; // Agregar latitud
+    let numCasa = req.body.numCasa; // Agregar numCasa
+
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password1, salt);
     const record = await Usuario.findOne({ correo: correo });
     if (record) {
       return res.status(400).send({ message: "El correo ya está registrado" });
     }
     const usuario = new Usuario({
       nombre: nombre,
-      correo: correo,
+      email: correo,
       telefono: telefono,
       pregunta: pregunta,
       respuesta: respuesta,
-      password: hashedPassword,
+      password1: hashedPassword,
+      longitud: longitud, // Agregar longitud al objeto usuario
+      latitud: latitud, // Agregar latitud al objeto usuario
+      numCasa: numCasa // Agregar numCasa al objeto usuario
     });
 
     const resultado = await usuario.save();
@@ -190,7 +196,7 @@ exports.crearUsuario = async (req, res) => {
     const token = jwt.sign({ _id: _id }, "secret");
     res.cookie("jwt", token, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, //1 day
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
     console.log("Registro exitoso:", resultado); // Mensaje de éxito en la consola
@@ -203,7 +209,6 @@ exports.crearUsuario = async (req, res) => {
     res.status(500).send("Error en el servidor: " + error);
   }
 };
-
 
 
 

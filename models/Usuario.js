@@ -4,37 +4,46 @@ const UsuarioSchema = mongoose.Schema({
   nombre: {
     type: String,
     required: true,
+  }, email: {
+    type: String,
+    unique: true,
+    required: true
   },
-  password: {
+  password1: {
     type: String,
     required: true,
   },
-  confirmpass: {
+  
+  longitud: {
+    type: String,
+  },
+  latitud: {
     type: String,
   },
   telefono: {
     type: String,
     required: true,
-  }, 
-  correo:{
-    type:String,
-    unique:true,
-    required:true
-},
+  },
+
+  numCasa: {
+    type: String,
+    required: true,
+  },
+
 
   token: {
-    type:String
-},
+    type: String, required: false,
+  },
   pregunta: {
     type: String,
-    required:false,
+    required: false,
   },
   respuesta: {
     type: String,
-    required:false,
-    
-    
-    
+    required: false,
+
+
+
   },
   rol: {
     type: String,
@@ -43,8 +52,10 @@ const UsuarioSchema = mongoose.Schema({
   },
 });
 
+
+
 module.exports = {
- Usuario: mongoose.model("Usuarios", UsuarioSchema)
+  Usuario: mongoose.model("Usuarios", UsuarioSchema)
 };
 
 
