@@ -157,6 +157,7 @@ exports.EstadoUsuario = async (req, res) => {
     });
   }
 };
+
 exports.crearUsuario = async (req, res) => {
   try {
     console.log("req.body:", req.body); // Agrega este registro
@@ -172,21 +173,12 @@ exports.crearUsuario = async (req, res) => {
     let latitud = req.body.latitud; // Agregar latitud
     let numCasa = req.body.numCasa; // Agregar numCasa
 
-    // Validar que el correo electrónico no esté vacío ni nulo
-    if (!email) {
-      return res.status(400).send({ message: "El correo electrónico es requerido" });
-    }
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password1, salt);
-
-    // Verificar si el correo electrónico ya está registrado
     const record = await Usuario.findOne({ email: email });
     if (record) {
-      return res.status(400).send({ message: "El correo ya está registrado" });
+      return res.status(400).send({ message: "El email ya está registrado" });
     }
-
-    // Crear el usuario si el correo electrónico es válido
     const usuario = new Usuario({
       nombre: nombre,
       email: email,
@@ -194,9 +186,9 @@ exports.crearUsuario = async (req, res) => {
       pregunta: pregunta,
       respuesta: respuesta,
       password1: hashedPassword,
-      longitud: longitud,
-      latitud: latitud,
-      numCasa: numCasa
+      longitud: longitud, // Agregar longitud al objeto usuario
+      latitud: latitud, // Agregar latitud al objeto usuario
+      numCasa: numCasa // Agregar numCasa al objeto usuario
     });
 
     const resultado = await usuario.save();
@@ -217,6 +209,71 @@ exports.crearUsuario = async (req, res) => {
     res.status(500).send("Error en el servidor: " + error);
   }
 };
+
+
+
+
+
+
+exports.obtenerUsuarioById = async (req, res) => {
+  try {
+    const usuario = await Usuario.findById(req.params.id);
+    if (!usuario) {
+      return res.status(404).json({ msg: "usuario Not Found" });
+    }
+    res.json(usuario);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("ucurrio un error");
+  }
+};
+
+
+exports.buscaUsuarioByCorreo = async (req, res) => {
+  try {
+    let usuario = await Usuario.findOne({ correo: req.params.correo }, { _id: 1 });
+    if (usuario) {
+      res.json({ usuarioId: usuario._id });
+    } else {
+      res.json({ msg: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+
+
+
+
+
+
+exports.BuscaUsuarioByCorreo = async (req, res) => {
+  try {
+    const {correo }= req.body;
+
+    const usuario = await Usuario.findOne({correo} );
+    if (!usuario) {
+      return res
+        .status(404)
+        .json({ message: "usuario con este correo no encontrado" });
+     
+    }
+    res.json(usuario)
+
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("ocurrio un error");
+  }
+};
+
+
+
+
+
+
+
 
 exports.BuscaUsuarioByToken = async (req, res) => {
   try {
