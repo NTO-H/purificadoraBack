@@ -31,6 +31,7 @@ app.use(bodyParser.json());
 
 
 // Rutas
+app.use("/purificadora", require("./routes/purificadoras"));
 app.use('/usuarios', require('./routes/usuario'));
 
 // Puerto de escucha
