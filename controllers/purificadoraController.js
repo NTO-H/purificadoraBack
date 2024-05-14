@@ -17,7 +17,7 @@ exports.registroPurificadora = async (req, res) => {
 
      const record = await Purificadora.findOne({ email: email });
      if (record) {
-       return res.status(400).send({ message: "El email ya está registrado" });
+       return res.status(400).send({ message: "El correo ya está registrado" });
      }
     const purificadoraAdmin = new Purificadora({
       nombre: nombre,
