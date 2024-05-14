@@ -15,7 +15,7 @@ exports.registroPurificadora = async (req, res) => {
     let estado = req.body.estado;
     let numero = req.body.numero;
 
-     const record = await Usuario.findOne({ email: email });
+     const record = await Purificadora.findOne({ email: email });
      if (record) {
        return res.status(400).send({ message: "El email ya está registrado" });
      }
