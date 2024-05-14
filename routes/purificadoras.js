@@ -8,7 +8,8 @@ const purificadoraController=require("../controllers/purificadoraController")
 
 
 
-router.post('/agregacionPurificadora', purificadoraController.registroPurificadora)
+router.post("/agregacionPurificadora",purificadoraController.registroPurificadora
+);
 
 module.exports = router;
 

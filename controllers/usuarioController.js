@@ -151,6 +151,7 @@ exports.crearUsuario = async (req, res) => {
     if (record) {
       return res.status(400).send({ message: "El email ya está registrado" });
     }
+    
     const usuario = new Usuario({
       nombre: nombre,
       email: email,

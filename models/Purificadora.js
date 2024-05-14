@@ -6,7 +6,7 @@ const PurificadoraSchema = mongoose.Schema({
   },
   email: { type: String },
 
-  purificadora: { type: String },
+  purificadoraNombre: { type: String },
   calle: { type: String },
   numero: { type: String },
   estado: { type: String },
@@ -16,5 +16,5 @@ const PurificadoraSchema = mongoose.Schema({
   telefono: { type: String },
 });
 module.exports = {
-  Purificadora: mongoose.model("Purificadora", PurificadoraSchema),
+  Purificadora: mongoose.model("Purificadoras", PurificadoraSchema),
 };
