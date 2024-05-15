@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 // Rutas
 app.use("/purificadoraAdmin", require("./routes/purificadoras"));
 app.use('/usuarios', require('./routes/usuario'));
-
+app.use("/purificadoraRepartidores", require("./routes/repartidores"));
 // Puerto de escucha
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
