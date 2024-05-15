@@ -14,6 +14,14 @@ const PurificadoraSchema = mongoose.Schema({
   longitud: { type: String },
   latitud: { type: String },
   telefono: { type: String },
+  usuario: {
+    type: String,
+    required: false,
+  },
+  password: {
+    type: String,
+    required: false,
+  },
 });
 module.exports = {
   Purificadora: mongoose.model("Purificadoras", PurificadoraSchema),
