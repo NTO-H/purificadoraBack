@@ -60,6 +60,24 @@ exports.crearRepartidores = async (req, res) => {
     }
   };
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   exports.Login = async (req, res) => {
     try {
       const { email, password1 } = req.body;
