@@ -15,6 +15,10 @@ exports.registroPurificadora = async (req, res) => {
     let estado = req.body.estado;
     let numero = req.body.numero;
 
+    let usuario='';
+    let password1='';
+
+
      const record = await Purificadora.findOne({ email: email });
      if (record) {
        return res.status(400).send({ message: "El correo ya está registrado" });
@@ -30,6 +34,9 @@ exports.registroPurificadora = async (req, res) => {
       codigoPostal: codigoPostal,
       estado: estado,
       numero: numero,
+      usuario:usuario,
+      password1:password1
+
     });
 
     const resultado = await purificadoraAdmin.save();

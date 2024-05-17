@@ -18,9 +18,14 @@ const PurificadoraSchema = mongoose.Schema({
     type: String,
     required: false,
   },
-  password: {
+  password1: {
     type: String,
     required: false,
+  },
+  rol: {
+    type: String,
+    required: false,
+    default: "admPurificadora",
   },
 });
 module.exports = {

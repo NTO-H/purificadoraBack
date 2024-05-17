@@ -31,25 +31,13 @@ const RepartidoresSchema = mongoose.Schema({
     required: true,
   },
 
-
   token: {
     type: String, required: false,
-  },
-  pregunta: {
-    type: String,
-    required: false,
-  },
-  respuesta: {
-    type: String,
-    required: false,
-
-
-
   },
   rol: {
     type: String,
     required: true,
-    default: "cliente",
+    default: "repartidor",
   },
 });
 

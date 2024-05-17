@@ -3,6 +3,7 @@
 # crear usuario
 //POST http://localhost:4000/usuarios/signUp
 
+Body
 {
   "nombre": "adm",
   "email": "correo@ejemplo.com",
@@ -21,10 +22,51 @@
 
   # login
 //POST http://localhost:4000/usuarios/signIn
+
+Body
 {
   "pass": "contraseña123",
   "correo": "correo@ejemplo.com"
-  
-
-
 }
+
+#Registro de purificadora
+
+//POST http://localhost:4000/purificadoraAdmin/agregacionPurificadora 
+
+
+
+Body
+{
+  "nombre": "Juan Pérez",
+  "telefono": "1234567890",
+  "email": "juan.perez@example.com",
+  "longitud": -99.1332,
+  "latitud": 19.4326,
+  "purificadoraNombre": "Aqua Pure",
+  "calle": "Calle Falsa",
+  "codigoPostal": "01234",
+  "estado": "Ciudad de México",
+  "numero": "123"
+}
+
+
+
+
+#Registro de repartidor
+
+//POST http://localhost:4000/purificadoraRepartidores/crearRepartidores
+
+
+Body
+{
+  "password1": "miContraseñaSegura123",
+  "nombre": "Juan Pérez",
+  "telefono": "1234567890",
+  "email": "juan.perez@example.com",
+  "pregunta": "¿Cuál es tu color favorito?",
+  "respuesta": "Azul",
+  "longitud": -99.1332,
+  "latitud": 19.4326,
+  "numCasa": "123"
+}
+

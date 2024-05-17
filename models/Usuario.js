@@ -35,20 +35,9 @@ const UsuarioSchema = mongoose.Schema({
   token: {
     type: String, required: false,
   },
-  pregunta: {
-    type: String,
-    required: false,
-  },
-  respuesta: {
-    type: String,
-    required: false,
-
-
-
-  },
   rol: {
     type: String,
-    required: true,
+    required: false,
     default: "cliente",
   },
 });

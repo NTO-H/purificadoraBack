@@ -1,4 +1,6 @@
-const {Usuario} = require("../models/Usuario");
+const {Usuario} = require("../models/Usuario");  
+const {Repartidor} = require("../models/repartidor");  
+const {Purificadora} = require("../models/Purificadora");  
 require("../routes/usuario");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -8,7 +10,21 @@ const bcrypt = require("bcryptjs");
 exports.Login = async (req, res) => {
   try {
     const { email, password1 } = req.body;
-    const usuario = await Usuario.findOne({ email });
+
+    let usuario;
+    usuario = await Usuario.findOne({ email });
+    
+    if (!usuario) {
+      usuario = await Repartidor.findOne({ email });
+      if (!usuario) {
+      usuario = await Purificadora.findOne({ email });
+    }   
+    }   
+   
+
+   
+   
+   
     if (!usuario) return res.status(401).send("El correo no existe");
     // if (usuario) return res.status(200).send("El correo  existe");
     console.log("Password recibido:", password1);
@@ -129,6 +145,10 @@ exports.EstadoUsuario = async (req, res) => {
     });
   }
 };
+
+
+
+
 
 exports.crearUsuario = async (req, res) => {
   try {
