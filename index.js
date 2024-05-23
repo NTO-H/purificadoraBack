@@ -12,7 +12,7 @@ const cookieParser = require('cookie-parser');
 conectarDB();
 
 const corsOptions = {
-    origin: [ 'https://purificadora.vercel.app', 'http://localhost:4200' ],  // Lista de URLs permitidas
+    origin: [ 'https://purificadora.vercel.app', 'http://localhost:4200', ],  // Lista de URLs permitidas
     credentials: true,
 };
 
@@ -31,6 +31,7 @@ app.use(bodyParser.json());
 
 
 // Rutas
+// app.use("/Auth", require("./routes/Auth"));
 app.use("/purificadoraAdmin", require("./routes/purificadoras"));
 app.use('/usuarios', require('./routes/usuario'));
 app.use("/purificadoraRepartidores", require("./routes/repartidores"));

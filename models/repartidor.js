@@ -33,6 +33,9 @@ const RepartidoresSchema = mongoose.Schema({
 
   token: {
     type: String, required: false,
+  },fechaDeAgregacion: {
+    type: Date,
+    default: Date.now(),
   },
   rol: {
     type: String,

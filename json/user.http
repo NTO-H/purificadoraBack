@@ -70,3 +70,27 @@ Body
   "numCasa": "123"
 }
 
+
+
+!purificadora
+
+#actualizar purificadora
+------------------------------------------------------------------{id}
+//PUT  http://localhost:4000/purificadoraAdmin/updatePurificadora/6646fb1e056585782d99ded6
+
+Body
+{
+  "nombre": "Carlos",
+  "email": "carlos.garcia@example.com",
+  "purificadoraNombre": "Agua Pura",
+  "calle": "Avenida Siempre Viva",
+  "numero": "123",
+  "estado": "Ciudad de México",
+  "codigoPostal": "01000",
+  "longitud": "-99.1332",
+  "latitud": "19.4326",
+  "telefono": "5551234567",
+  "usuario": "pepe",
+  "password1": "contraseña123"
+  
+}

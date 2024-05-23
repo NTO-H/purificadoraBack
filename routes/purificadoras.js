@@ -1,15 +1,15 @@
-const express = require('express')
+const express = require("express");
 
+const router = express.Router();
+const purificadoraController = require("../controllers/purificadoraController");
 
-const router = express.Router()
-const purificadoraController=require("../controllers/purificadoraController")
-
-
-
-
-
-router.post("/agregacionPurificadora",purificadoraController.registroPurificadora
+router.post(
+  "/agregacionPurificadora",
+  purificadoraController.registroPurificadora
 );
 
-module.exports = router;
+router.get("/getPuricadoras", purificadoraController.obtenePuricadoras);
+router.delete("/deletePurificadora/:id",purificadoraController.eliminarPuricadora);
+router.put("/updatePurificadora/:id",purificadoraController.updatePurificadora);
 
+module.exports = router;

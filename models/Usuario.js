@@ -40,6 +40,7 @@ const UsuarioSchema = mongoose.Schema({
     required: false,
     default: "cliente",
   },
+  
 });
 
 

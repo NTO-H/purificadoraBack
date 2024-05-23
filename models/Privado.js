@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 const PoliticaNegocioSchema = mongoose.Schema({
 
-
-
-  
   titulo: {
     type:String,
     required: true,

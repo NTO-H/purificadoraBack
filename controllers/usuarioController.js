@@ -5,8 +5,6 @@ require("../routes/usuario");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-
-
 exports.Login = async (req, res) => {
   try {
     const { email, password1 } = req.body;
@@ -20,17 +18,10 @@ exports.Login = async (req, res) => {
       usuario = await Purificadora.findOne({ email });
     }   
     }   
-   
-
-   
-   
-   
     if (!usuario) return res.status(401).send("El correo no existe");
     // if (usuario) return res.status(200).send("El correo  existe");
     console.log("Password recibido:", password1);
     const isPasswordValid = await bcrypt.compare(password1, usuario.password1);
-    
-
     if (!isPasswordValid) return res.status(401).send("Contraseña incorrecta");
 
     // Verificar si el usuario tiene un rol
@@ -428,14 +419,6 @@ exports.listarSecretas = async (req, res) => {
     // Obtener todas las preguntas secretas
     const preguntas = await PreguntasSecretas.find();
 
-    // // Verificar si se obtuvieron preguntas
-    // if (preguntas.length === 0) {
-    //   // No se encontraron preguntas
-    //   console.log('No se encontraron preguntas secretas');
-    //   return res.status(404).json({ error: 'No se encontraron preguntas secretas' });
-    // }
-
-    // Devolver las preguntas como respuesta JSON
     res.json(preguntas);
   } catch (error) {
     // Manejar errores
@@ -449,20 +432,6 @@ exports.listarSecretas = async (req, res) => {
 
 
 
-// exports.obtenerPreguntasSecretas = async (req, res) => {
-
-
-//   console.log("Preguntas secretas encontradas:"); // Agregamos este console.log para verificar las preguntas secretas encontradas
-
-//   try {
-//     const question = await PreguntasSecretas.find();
-//     console.log("Preguntas secretas encontradas:", question); // Agregamos este console.log para verificar las preguntas secretas encontradas
-//     res.json(question);
-//   } catch (error) {
-//     console.error("Error al obtener las preguntas secretas:", error);
-//     res.status(500).json({ error: "Error interno del servidor" });
-//   }
-// }
 
 
 // Ruta para actualizar el rol de un usuario

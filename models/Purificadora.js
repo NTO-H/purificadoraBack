@@ -22,6 +22,15 @@ const PurificadoraSchema = mongoose.Schema({
     type: String,
     required: false,
   },
+  fechaDeRegistro: {
+    type: Date,
+    default: Date.now(),
+  }, estatus: {
+    type: String,
+    required: false,
+    default: "Activo",
+  },
+
   rol: {
     type: String,
     required: false,
