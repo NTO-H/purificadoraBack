@@ -6,5 +6,5 @@ const repartidoresController=require('../controllers/repartidoresController');
 
 router.post('/crearRepartidores',repartidoresController.crearRepartidores);
 router.post('/signIn',repartidoresController.Login);
-
+router.get("/obtenerRepartidores", repartidoresController.getRepartidores);
 module.exports=router;

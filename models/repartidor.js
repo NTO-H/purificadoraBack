@@ -14,13 +14,6 @@ const RepartidoresSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  
-  longitud: {
-    type: String,
-  },
-  latitud: {
-    type: String,
-  },
   telefono: {
     type: String,
     required: true,

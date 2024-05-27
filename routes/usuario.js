@@ -7,12 +7,12 @@ const usuarioController=require('../controllers/usuarioController');
 router.get('/admin',usuarioController.adminRoute);
 router.get('/cliente',usuarioController.clienteRoute);
 router.put('/actualizaRol/:id',usuarioController.actualizaRolUsuario);
-
-router.delete('/:id', usuarioController.eliminarUsuario);
+router.put('/actualiza/:id',usuarioController.actualizaDatos);
+router.delete("/deleteCliente/:id", usuarioController.eliminarCliente);
 
 router.put('/actualizaxCorreo',usuarioController.actualizarPasswordxCorreo)
 router.put('/actualizaxPregunta',usuarioController.actualizarPasswordxPregunta)
-
+// router.delete("/deleteCliente/:id", usuarioController.eliminarCliente);
 router.post('/token',usuarioController.BuscaUsuarioByToken)
 router.get('/buscaUsuarioByCorreo/:correo',usuarioController.buscaUsuarioByCorreo)
 router.post('/correo',usuarioController.BuscaUsuarioByCorreo)
@@ -22,6 +22,6 @@ router.post('/respuesta',usuarioController.BuscaUsuarioByPreguntayRespuesta)
 router.post('/signUp',usuarioController.crearUsuario);
 router.post('/signIn',usuarioController.Login);
 router.get('/',usuarioController.obtenerUsuarios);
-router.get('/:id',usuarioController.obtenerUsuarioById)
+router.get('/getDetalles/:id',usuarioController.obtenerUsuarioById)
 module.exports=router;
 

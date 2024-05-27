@@ -8,13 +8,9 @@ const UsuarioSchema = mongoose.Schema({
   email: {
     type: String,
     unique: true,
-    required: true
-  },
-  password1: {
-    type: String,
     required: true,
   },
-  
+
   longitud: {
     type: String,
   },
@@ -30,17 +26,30 @@ const UsuarioSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-
+  estatus: {
+    type: String,
+    required: false,
+    default: "Activo",
+  },
 
   token: {
-    type: String, required: false,
+    type: String,
+    required: false,
   },
   rol: {
     type: String,
     required: false,
     default: "cliente",
   },
-  
+  password1: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  fechaDeRegistro: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 
