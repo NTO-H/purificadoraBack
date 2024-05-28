@@ -9,6 +9,7 @@ router.get('/cliente',usuarioController.clienteRoute);
 router.put('/actualizaRol/:id',usuarioController.actualizaRolUsuario);
 router.put('/actualiza/:id',usuarioController.actualizaDatos);
 router.delete("/deleteCliente/:id", usuarioController.eliminarCliente);
+router.get('/getDetalles/:id',usuarioController.obtenerUsuarioById)
 
 router.put('/actualizaxCorreo',usuarioController.actualizarPasswordxCorreo)
 router.put('/actualizaxPregunta',usuarioController.actualizarPasswordxPregunta)
@@ -22,6 +23,5 @@ router.post('/respuesta',usuarioController.BuscaUsuarioByPreguntayRespuesta)
 router.post('/signUp',usuarioController.crearUsuario);
 router.post('/signIn',usuarioController.Login);
 router.get('/',usuarioController.obtenerUsuarios);
-router.get('/getDetalles/:id',usuarioController.obtenerUsuarioById)
 module.exports=router;
 

@@ -16,6 +16,9 @@
 // // 
 
 
+
+
+
 // // politicas
 // router.put('/politica/:id', privadoController.actualizarPolitica);
 // router.get('/politica/:id', privadoController.obtenerPolitica);
