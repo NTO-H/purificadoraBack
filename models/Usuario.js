@@ -26,6 +26,14 @@ const UsuarioSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  municipio: {
+    type: String,
+    required: true,
+  },
+  colonia: {
+    type: String,
+    required: true,
+  },
   estatus: {
     type: String,
     required: false,

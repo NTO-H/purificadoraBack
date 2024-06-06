@@ -144,7 +144,8 @@ exports.crearUsuario = async (req, res) => {
     let longitud = req.body.longitud; // Agregar longitud
     let latitud = req.body.latitud; // Agregar latitud
     let numCasa = req.body.numCasa; // Agregar obtenerUsuarioById
-
+    let municipio = req.body.municipio; // Agregar obtenerUsuarioById
+    let colonia = req.body.colonia; // Agregar obtenerUsuarioById
     // const salt = await bcrypt.genSalt(10);
     // const hashedPassword = await bcrypt.hash(password1, salt);
     const record = await Usuario.findOne({ email: email });
@@ -156,14 +157,14 @@ exports.crearUsuario = async (req, res) => {
       nombre: nombre,
       email: email,
       telefono: telefono,
-      // pregunta: pregunta,
-      // respuesta: respuesta,
-      // password1: hashedPassword,
       longitud: longitud, // Agregar longitud al objeto usuario
       latitud: latitud, // Agregar latitud al objeto usuario
       numCasa: numCasa, // Agregar numCasa al objeto usuario
+      municipio: municipio, // Agregar numCasa al objeto usuario
+      colonia: colonia, // Agregar numCasa al objeto usuario
     });
 
+    
     const resultado = await usuario.save();
     const { _id } = await resultado.toJSON();
     const token = jwt.sign({ _id: _id }, "secret");

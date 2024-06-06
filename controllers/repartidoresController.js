@@ -130,8 +130,6 @@ exports.actualizaDatos = async (req, res) => {
   }
 };
 
-
-
 exports.obtenerRepartidorById = async (req, res) => {
   try {
     const respuesta = await Repartidor.findById(req.params.id);

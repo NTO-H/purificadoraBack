@@ -11,6 +11,8 @@ router.put('/actualiza/:id',usuarioController.actualizaDatos);
 router.delete("/deleteCliente/:id", usuarioController.eliminarCliente);
 router.get('/getDetalles/:id',usuarioController.obtenerUsuarioById)
 
+// router.get('/getUserBy/:id',usuarioController.obtenerUsuarioById)
+
 router.put('/actualizaxCorreo',usuarioController.actualizarPasswordxCorreo)
 router.put('/actualizaxPregunta',usuarioController.actualizarPasswordxPregunta)
 // router.delete("/deleteCliente/:id", usuarioController.eliminarCliente);
