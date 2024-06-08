@@ -163,7 +163,7 @@
 //       res.status(404).json({ msg: 'No existe la politica' });
 //     }
     
-//     await Politica.findOneAndDelete({ _id: req.params.id });
+//     await Poli tica.findOneAndDelete({ _id: req.params.id });
 //     res.json({ msg: 'politica eliminado con exito' });
     
     

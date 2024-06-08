@@ -8,8 +8,16 @@ router.post(
 );
 
 router.post("/crearRuta/", purificadoraController.registroRuta);
+router.post(
+  "/crearPuntoCliente/:id",
+  purificadoraController.registroPuntoEntregaEnRuta
+);
 
 router.delete("/deleteRuta/:id", purificadoraController.eliminarRuta);
+router.delete(
+  "/deletePuntoEntrega/:id",
+  purificadoraController.eliminarPuntoEntrega
+);
 router.get("/getDetallesRutaById/:id", purificadoraController.getDetalleRutaById);
 
 router.get("/getPuricadoras", purificadoraController.obtenePuricadoras);

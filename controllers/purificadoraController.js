@@ -59,6 +59,7 @@ exports.obtenePuricadoras = async (req, res) => {
     console.log("error de consulta");
   }
 };
+
 exports.obteneRutas = async (req, res) => {
   try {
     const rutas = await Ruta.find();
@@ -113,6 +114,92 @@ exports.eliminarRuta = async (req, res) => {
   }
 };
 
+
+
+
+
+exports.registroPuntoEntregaEnRuta = async (req, res) => {
+  try {
+    const { puntosDeEntrega } = req.body;
+
+    // Busca la ruta por su ID
+    let ruta = await Ruta.findById(req.params.id);
+    if (!ruta) {
+      return res.status(404).json({ msg: "No se encontró la ruta" });
+    }
+
+    const formattedPuntosDeEntrega = puntosDeEntrega.map((punto) => ({
+      municipio: punto.municipio,
+      colonia: punto.colonia,
+      clienteId: punto.clienteId.toString(), // Convertir clienteId a cadena
+    }));
+
+    // Agregar los nuevos puntos de entrega al arreglo de puntos de entrega
+    ruta.puntosDeEntrega.push(...formattedPuntosDeEntrega);
+
+    // Guardar la ruta actualizada
+    const rutaActualizada = await ruta.save();
+
+    res.status(201).json({
+      msg: "Punto de entrega agregado con éxito",
+      ruta: rutaActualizada,
+    });
+  } catch (error) {
+    console.error("Error al agregar el punto de entrega:", error);
+    res
+      .status(500)
+      .json({ message: "Error al agregar el punto de entrega", error });
+  }
+};
+
+
+
+
+
+
+exports.eliminarPuntoEntrega = async (req, res) => {
+  try {
+
+    const puntoEntregaId = req.params.id;
+
+
+    //  const rutaId = req.params; // Extraer el ID del punto de entrega
+    // // Encuentra la ruta que contiene el punto de entrega
+    // const ruta = await Ruta.findById(rutaId);
+    // if (!ruta) {
+    //   return res.status(404).json({ msg: "No existe la ruta" });
+    // }
+
+
+
+
+
+    // Busca todas las rutas que contienen el punto de entrega con el id específico
+    const rutas = await Ruta.find({ "puntosDeEntrega._id": puntoEntregaId });
+    if (!rutas || rutas.length === 0) {
+      return res
+        .status(404)
+        .json({ msg: "No se encontró el punto de entrega en ninguna ruta" });
+    }
+
+    // Itera sobre las rutas encontradas (puede haber más de una) para encontrar y eliminar el punto de entrega
+    for (let i = 0; i < rutas.length; i++) {
+      const ruta = rutas[i];
+      ruta.puntosDeEntrega = ruta.puntosDeEntrega.filter(
+        (punto) => punto._id.toString() !== puntoEntregaId
+      );
+
+      // Guarda cada ruta actualizada
+      await ruta.save();
+    }
+
+    res.json({ msg: "Punto de entrega eliminado con éxito" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Ocurrió un error");
+  }
+};
+
 exports.updatePurificadora = async (req, res) => {
   try {
     const {
@@ -160,7 +247,6 @@ exports.updatePurificadora = async (req, res) => {
 
 
 
-
 exports.registroRuta = async (req, res) => {
   try {
     const {
@@ -192,7 +278,6 @@ exports.registroRuta = async (req, res) => {
       puntosDeEntrega: formattedPuntosDeEntrega,
       diasAsignados,
     });
-    
 
     // Guardar la nueva ruta en la base de datos
     const rutaGuardada = await nuevaRuta.save();
