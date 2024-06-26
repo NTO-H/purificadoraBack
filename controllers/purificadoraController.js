@@ -1,6 +1,6 @@
 const { Purificadora } = require("../models/Purificadora");
-const{ Ruta}=require("../models/Ruta");
-require("../routes/purificadoras");
+const{ Ruta}=require("../models/ruta");
+require("../Routes/PurificadoraRoute");
 
 exports.registroPurificadora = async (req, res) => {
   try {

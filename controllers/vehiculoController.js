@@ -1,5 +1,5 @@
-const { Vehiculo } = require("../models/vehiculo");
-require("../routes/repartidores");
+const { Vehiculo } = require("../Models/vehiculo");
+require("../Routes/RepartidoreRoute");
 
 exports.crearVehiculo = async (req, res) => {
   try {
@@ -60,8 +60,6 @@ exports.eliminarVehiculo = async (req, res) => {
 
 exports.actualizaDatos = async (req, res) => {
   try {
-
-     
     const { id } = req.params;
     const { marca, anio, modelo, placas } = req.body;
     // Busca y actualiza el usuario en la base de datos

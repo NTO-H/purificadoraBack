@@ -1,10 +1,9 @@
 const { Usuario } = require("../models/Usuario");
 const { Repartidor } = require("../models/repartidor");
 const { Purificadora } = require("../models/Purificadora");
-require("../routes/usuario");
+require("../Routes/UsuarioRoute");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
 
 exports.Login = async (req, res) => {
   try {
@@ -12,7 +11,7 @@ exports.Login = async (req, res) => {
 
     let usuario;
     usuario = await Usuario.findOne({ email });
-  console.log("correo recibido:", email);
+    console.log("correo recibido:", email);
     if (!usuario) {
       usuario = await Repartidor.findOne({ email });
       if (!usuario) {
@@ -39,7 +38,6 @@ exports.Login = async (req, res) => {
     return res.status(500).send("Error en el servidor: " + error);
   }
 };
-
 
 exports.perfilUsuario = async (req, res) => {
   try {
@@ -164,7 +162,6 @@ exports.crearUsuario = async (req, res) => {
       colonia: colonia, // Agregar numCasa al objeto usuario
     });
 
-    
     const resultado = await usuario.save();
     const { _id } = await resultado.toJSON();
     const token = jwt.sign({ _id: _id }, "secret");
@@ -406,12 +403,10 @@ exports.actualizaRolUsuario = async (req, res) => {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
-    res
-      .status(200)
-      .json({
-        mensaje: "Rol actualizado correctamente",
-        usuario: usuarioActualizado,
-      });
+    res.status(200).json({
+      mensaje: "Rol actualizado correctamente",
+      usuario: usuarioActualizado,
+    });
   } catch (error) {
     console.error("Error al actualizar el rol del usuario:", error);
     res.status(500).json({ mensaje: "Error interno del servidor" });

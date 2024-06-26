@@ -1,8 +1,7 @@
-const { Repartidor } = require("../models/repartidor");
-require("../routes/repartidores");
+const { Repartidor } = require("../Models/RepartidorModel");
+require("../Routes/RepartidoreRoute");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
 
 exports.crearRepartidores = async (req, res) => {
   try {
@@ -72,7 +71,6 @@ exports.Login = async (req, res) => {
   }
 };
 
-
 exports.getRepartidores = async (req, res) => {
   try {
     // Excluye el usuario con el rol "admin" de la consulta
@@ -99,12 +97,10 @@ exports.eliminarRepartidor = async (req, res) => {
   }
 };
 
-
 exports.actualizaDatos = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, email ,telefono, numCasa } =
-      req.body;
+    const { nombre, email, telefono, numCasa } = req.body;
     // Busca y actualiza el usuario en la base de datos
     let cliente = await Repartidor.findById(req.params.id);
     if (!cliente) {
@@ -142,8 +138,6 @@ exports.obtenerRepartidorById = async (req, res) => {
     res.status(404).send("ucurrio un error");
   }
 };
-
-
 
 // exports.getRepartidores = async (req, res) => {
 //   try {
