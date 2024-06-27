@@ -27,7 +27,6 @@ const AcercaSchema = mongoose.Schema({
 });
 
 
-
 const PreguntaSchema = mongoose.Schema({
 
   titulo: {
