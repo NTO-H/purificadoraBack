@@ -18,7 +18,6 @@ const RepartidoresSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-
   numCasa: {
     type: String,
     required: true,
