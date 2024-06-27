@@ -6,6 +6,8 @@ const PurificadoraSchema = mongoose.Schema({
   },
   email: { type: String },
 
+
+  
   purificadoraNombre: { type: String },
   calle: { type: String },
   numero: { type: String },

@@ -10,3 +10,6 @@ router.get("/getDetalles/:id", VehiculoController.obtenerVehiculoById);
 router.post("/crearVehiculo", VehiculoController.crearVehiculo);
 router.get("/obtenerVehiculos", VehiculoController.getVehiculos);
 module.exports = router;
+
+
+
