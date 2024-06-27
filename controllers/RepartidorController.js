@@ -1,5 +1,5 @@
 const { Repartidor } = require("../Models/RepartidorModel");
-require("../Routes/RepartidoreRoute");
+require("../Routes/RepartidorRoute");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -32,6 +32,7 @@ exports.crearRepartidores = async (req, res) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
+
 
     console.log("Registro exitoso:", resultado); // Mensaje de éxito en la consola
     res.json({

@@ -10,10 +10,16 @@ const PuntoDeEntregaSchema = mongoose.Schema({
 // Define el esquema para la ruta
 const RutaSchema = mongoose.Schema({
   nombreRuta: { type: String, required: true },
-  repartidorId: { type: String, required: true },
-  vehiculoId: { type: String, required: true },
-  fechaInicio: { type: Date, required: false },
-  fechaFin: { type: Date, required: false },
+  repartidorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Repartidores",
+    required: true,
+  },
+  vehiculoId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Vehiculo",
+    required: true,
+  },
   estado: {
     type: String,
     enum: ["pendiente", "en_curso", "finalizada"],

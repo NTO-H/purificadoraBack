@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 // Importa la biblioteca mongoose
 //  que se utiliza para interactuar con bases de datos MongoDB desde Node.js.
 //ruta del archivo de variable.env
-require("dotenv").config({ path: "variables.env" });
+require("dotenv").config({ path: "Variables.env" });
 
 
 

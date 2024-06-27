@@ -1,4 +1,6 @@
-Post http://localhost:4000/purificadoraAdmin/crearRuta
+
+Request URL:http://localhost:4000/purificadoraAdmin/crearRuta
+Request Method:POST
 body
 {
 

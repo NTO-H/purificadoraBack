@@ -1,7 +1,11 @@
 
 
 # crear usuario
-//POST http://localhost:4000/usuarios/signUp
+
+
+
+Request URL:http://localhost:4000/usuarios/signUp
+Request Method:POST
 
 Body
 {
@@ -21,7 +25,11 @@ Body
 
 
   # login
-//POST http://localhost:4000/usuarios/signIn
+
+  
+
+Request URL: http://localhost:4000/usuarios/signIn
+Request Method:POST
 
 Body
 {
@@ -31,7 +39,9 @@ Body
 
 #Registro de purificadora
 
-//POST http://localhost:4000/purificadoraAdmin/agregacionPurificadora 
+
+Request URL:http://localhost:4000/purificadoraAdmin/agregacionPurificadora 
+Request Method:POST
 
 
 

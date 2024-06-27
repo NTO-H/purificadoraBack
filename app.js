@@ -1,5 +1,5 @@
 const express = require("express");
-const conectarDB = require("./config/conexion");
+const conectarDB = require("./Config/Conexion");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -21,10 +21,10 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 // Rutas padres
-// app.use("/autentificacion", require("./Routes/auth"));
+app.use("/autentificacion", require("./Routes/AuthRoute"));
 app.use("/purificadoraAdmin", require("./Routes/PurificadoraRoute"));
 app.use("/usuarios", require("./Routes/UsuarioRoute"));
 app.use("/vehiculos", require("./Routes/VehiculoRoute"));
-app.use("/purificadoraRepartidores", require("./Routes/RepartidoreRoute"));
+app.use("/purificadoraRepartidores", require("./Routes/RepartidorRoute"));
 
-module.exports = App;
+module.exports = app;

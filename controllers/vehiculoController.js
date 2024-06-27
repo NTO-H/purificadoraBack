@@ -1,5 +1,5 @@
-const { Vehiculo } = require("../Models/vehiculo");
-require("../Routes/RepartidoreRoute");
+const { Vehiculo } = require("../Models/VehiculoModel");
+require("../Routes/RepartidorRoute");
 
 exports.crearVehiculo = async (req, res) => {
   try {
@@ -19,8 +19,6 @@ exports.crearVehiculo = async (req, res) => {
     });
 
     const resultado = await vehiculo.save();
-    // const { _id } = await Vehiculo.toJSON();
-
     console.log("Registro exitoso:", resultado); // Mensaje de éxito en la consola
     res.json({
       vehiculo: resultado._id,

@@ -1,6 +1,6 @@
-const { Usuario } = require("../models/Usuario");
-const { Repartidor } = require("../models/repartidor");
-const { Purificadora } = require("../models/Purificadora");
+const { Usuario } = require("../Models/UsuarioModel");
+const { Repartidor } = require("../Models/RepartidorModel");
+const { Purificadora } = require("../Models/PurificadoraModel");
 require("../Routes/UsuarioRoute");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");

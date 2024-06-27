@@ -1,5 +1,5 @@
-const { Purificadora } = require("../models/Purificadora");
-const{ Ruta}=require("../models/ruta");
+const { Purificadora } = require("../Models/PurificadoraModel");
+const{ Ruta}=require("../Models/RutaModel");
 require("../Routes/PurificadoraRoute");
 
 exports.registroPurificadora = async (req, res) => {
@@ -53,7 +53,7 @@ exports.registroPurificadora = async (req, res) => {
 
 exports.obtenePuricadoras = async (req, res) => {
   try {
-    const purificadoras = await Purificadora.find();
+    const purificadoras = await Purificadora.find()
     res.json(purificadoras);
   } catch (error) {
     console.log("error de consulta");
@@ -62,12 +62,16 @@ exports.obtenePuricadoras = async (req, res) => {
 
 exports.obteneRutas = async (req, res) => {
   try {
-    const rutas = await Ruta.find();
+    const rutas = await Ruta.find()
+      .populate("repartidorId")
+      .populate("vehiculoId")
+      .exec();;
     res.json(rutas);
   } catch (error) {
     console.log("error de consulta");
   }
 };
+
 exports.getDetalleRutaById = async (req, res) => {
   try {
     const ruta = await Ruta.findById(req.params.id);
@@ -80,6 +84,7 @@ exports.getDetalleRutaById = async (req, res) => {
     res.status(404).send("ucurrio un error");
   }
 };
+
 
 
 exports.eliminarPuricadora = async (req, res) => {
@@ -258,6 +263,16 @@ exports.registroRuta = async (req, res) => {
       puntosDeEntrega,
       diasAsignados,
     } = req.body;
+
+    // Verificar si ya existe una ruta con ese nombre
+    const existencia = await Ruta.find({ nombreRuta: nombreRuta });
+
+    // Si existe alguna ruta con ese nombre, devolver un mensaje de error
+    if (existencia.length > 0) {
+      return res
+        .status(409)
+        .json({ message: "Ya existe una ruta con ese nombre" });
+    }
 
     // Formatear puntosDeEntrega correctamente
     const formattedPuntosDeEntrega = puntosDeEntrega.flatMap((punto) =>
