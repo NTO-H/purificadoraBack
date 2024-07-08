@@ -15,40 +15,9 @@ const conectarDB = async () => {
             // useNewUrlParser: true,
             // useUnifiedTopology: true
         })
-        console.log(process.env.DB_MONGO)
-        let contador = 0;
-        const intervalo = setInterval(() => {
-            contador++;
-            process.stdout.write(`Conectando (${contador} %)\r`);
-        }, 1000);
-
-        clearInterval(intervalo); // Detiene el contador
-        console.log("\nConexión establecida");
+        // console.log(process.env.DB_MONGO)
 console.log( `
-                              ,//@@@.
-                         .///////@@@@@@@&.
-                    ,////////////@@@@@@@@@@@@@/
-               ./////////////////#@@@@@@@@@@@@@@@@@,
-          ,/////////////////.         ,&@@@@@@@@@@@@@@@@#
-         /////////////.                     %@@@@@@@@@@@@@
-         /////////.                             .%@@@@@@@@
-         //////.                                   @@@@@@
-         ///////                                   @@@@@@
-         .//////                                   @@@@@@&
-         .//////         \x1b[32m{ response :\x1b[0m\x1b[32mok }\x1b[0m         @@@@@@(
-          //////                                   @@@@@@.
-          //////,                                  @@@@@@
-          //////.                                  @@@@@@
-          ,//////                                  @@@@@@
-          .//////                                 @@@@@@
-           .///////.                           %@@@@@@@&
-            ///////////                    ,@@@@@@@@@@@(
-              ,///////////,             #@@@@@@@@@@@&
-                 .///////////.       &@@@@@@@@@@@%
-                    ./////////////@@@@@@@@@@@@*
-                       ./////////@@@@@@@@@@,
-                           ./////@@@@@@%
-                              .//@@@#
+                  \x1b[32m{ \x1b[32mOK }\x1b[0m 
 ` + '\x1b[0m');
 
 

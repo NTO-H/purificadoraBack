@@ -8,7 +8,7 @@ const RepartidoresSchema = mongoose.Schema({
   email: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   password1: {
     type: String,
@@ -24,8 +24,10 @@ const RepartidoresSchema = mongoose.Schema({
   },
 
   token: {
-    type: String, required: false,
-  },fechaDeAgregacion: {
+    type: String,
+    required: false,
+  },
+  fechaDeAgregacion: {
     type: Date,
     default: Date.now(),
   },
@@ -34,6 +36,7 @@ const RepartidoresSchema = mongoose.Schema({
     required: true,
     default: "repartidor",
   },
+  diasAsignados: { type: Array, required: false },
 });
 
 

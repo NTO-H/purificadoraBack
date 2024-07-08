@@ -5,17 +5,20 @@ exports.crearVehiculo = async (req, res) => {
   try {
     let marca = req.body.marca;
     let modelo = req.body.modelo;
-    let anio = req.body.anio;
+    // let anio = req.body.anio;
     let placas = req.body.placas;
+      let diasAsignados = req.body.diasAsignados;
     const record = await Vehiculo.findOne({ placas: placas });
     if (record) {
       return res.status(400).send({ message: "El anio ya está registrado" });
     }
     const vehiculo = new Vehiculo({
       marca: marca,
-      anio: anio,
       modelo: modelo,
-      placas: placas, // Agregar numCasa al objeto usuario
+      placas: placas, 
+       diasAsignados :diasAsignados
+
+      // Agregar numCasa al objeto usuario
     });
 
     const resultado = await vehiculo.save();
@@ -29,6 +32,7 @@ exports.crearVehiculo = async (req, res) => {
     console.log(error);
   }
 };
+
 
 exports.getVehiculos = async (req, res) => {
   try {

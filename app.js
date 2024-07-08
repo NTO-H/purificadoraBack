@@ -12,7 +12,9 @@ const corsOptions = {
   origin: [
     "https://purificadora.vercel.app",
     "http://localhost:4200",
-    "http://192.168.0.103:4000",
+    "http://localhost:49466",
+    "https://fd1v4w8b-4200.usw3.devtunnels.ms/",
+    "http://192.168.0.105:4200",
   ],
   credentials: true,
 };

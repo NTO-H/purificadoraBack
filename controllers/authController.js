@@ -12,6 +12,7 @@ exports.Login = async (req, res) => {
     let usuario;
 
     console.log("correo recibido:", email);
+    console.log("password recibido:", password1);
 
     // Verificar la conexión a la base de datos
     if (!mongoose.connection.readyState) {

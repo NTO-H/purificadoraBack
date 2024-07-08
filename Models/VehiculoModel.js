@@ -9,10 +9,8 @@ const VehiculoSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  anio: {
-    type: Number,
-    required: true,
-  },
+  diasAsignados: { type: Array, required: false },
+
   placas: {
     type: String,
     required: true,

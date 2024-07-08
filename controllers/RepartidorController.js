@@ -2,6 +2,7 @@ const { Repartidor } = require("../Models/RepartidorModel");
 require("../Routes/RepartidorRoute");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { Salida } = require("../Models/SalidaModel");
 
 exports.crearRepartidores = async (req, res) => {
   try {
@@ -10,6 +11,7 @@ exports.crearRepartidores = async (req, res) => {
     let telefono = req.body.telefono;
     let email = req.body.email;
     let numCasa = req.body.numCasa;
+    let diasAsignados = req.body.diasAsignados;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password1, salt);
     const record = await Repartidor.findOne({ email: email });
@@ -21,7 +23,8 @@ exports.crearRepartidores = async (req, res) => {
       email: email,
       telefono: telefono,
       password1: hashedPassword,
-      numCasa: numCasa, // Agregar numCasa al objeto usuario
+      numCasa: numCasa,
+      diasAsignados: diasAsignados,
     });
 
     const resultado = await repartidor.save();
@@ -32,7 +35,6 @@ exports.crearRepartidores = async (req, res) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
-
 
     console.log("Registro exitoso:", resultado); // Mensaje de éxito en la consola
     res.json({
@@ -140,6 +142,49 @@ exports.obtenerRepartidorById = async (req, res) => {
   }
 };
 
+function obtenerFechaDDMMYYYY() {
+  let fecha = new Date();
+  let año = fecha.getFullYear();
+  let mes = String(fecha.getMonth() + 1).padStart(2, "0");
+  let dia = String(fecha.getDate()).padStart(2, "0");
+
+  return `${dia}-${mes}-${año}`;
+}
+
+exports.getObtenerSalidaxClienteId = async (req, res) => {
+  try {
+    let diasSemana = [
+      "domingo",
+      "lunes",
+      "martes",
+      "miércoles",
+      "jueves",
+      "viernes",
+      "sábado",
+    ];
+
+    console.log(req.params.id);
+    console.log(obtenerFechaDDMMYYYY());
+
+    const salida = await Salida.find({
+      repartidorId: req.params.id,
+      fechaSalida: obtenerFechaDDMMYYYY(),
+    })
+      .populate("repartidorId")
+      .populate("vehiculoId")
+      .populate("puntosDeEntrega.clienteId")
+      .exec();
+    if (!salida || salida.length === 0) {
+      return res
+        .status(404)
+        .json({ msg: "No se encontró salida para el día de hoy" });
+    }
+    res.json(salida);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Ocurrió un error");
+  }
+};
 // exports.getRepartidores = async (req, res) => {
 //   try {
 //     const resultado = await Repartidor.find();

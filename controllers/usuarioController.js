@@ -11,7 +11,8 @@ exports.Login = async (req, res) => {
 
     let usuario;
     usuario = await Usuario.findOne({ email });
-    console.log("correo recibido:", email);
+    // console.log("correo recibido:", email);
+    console.log("contraseña recibido:", password1);
     if (!usuario) {
       usuario = await Repartidor.findOne({ email });
       if (!usuario) {
@@ -357,21 +358,77 @@ exports.actualizarPasswordxPregunta = async (req, res) => {
   }
 };
 
-exports.eliminarCliente = async (req, res) => {
+const { Ruta } = require("../Models/RutaModel");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
+
+exports.eliminarPuntoEntregaPorClienteId = async (clienteId) => {
   try {
-    let usuario = await Usuario.findById(req.params.id);
-
-    if (!usuario) {
-      res.status(404).json({ msg: "No existe el Usuario" });
+    const clienteObjectId = new ObjectId(clienteId);
+    const rutas = await Ruta.find({
+      "puntosDeEntrega.clienteId": clienteObjectId,
+    });
+    if (!rutas || rutas.length === 0) {
+      return null
     }
-
-    await Usuario.findOneAndDelete({ _id: req.params.id });
-    res.json({ msg: "Usuario eliminado con exito" });
+    for (let i = 0; i < rutas.length; i++) {
+      const ruta = rutas[i];
+      ruta.puntosDeEntrega = ruta.puntosDeEntrega.filter(
+        (punto) => punto.clienteId.toString() !== clienteObjectId.toString()
+      );
+      await ruta.save();
+    }
+    return {
+      success: true,
+      msg: "Puntos de entrega eliminados con éxito de todas las rutas",
+    };
   } catch (error) {
-    console.log(error);
-    res.status(500).send("ocurrio un error");
+    console.error(error);
+    return {
+      success: false,
+      msg: "Ocurrió un error al eliminar los puntos de entrega",
+    };
   }
 };
+
+
+
+
+exports.eliminarCliente = async (req, res) => {
+  try {
+    const usuario = await Usuario.findById(req.params.id);
+
+    if (!usuario) {
+      return res.status(404).json({ msg: "No existe el Usuario" });
+    }
+    const clienteObjectId = usuario._id;
+    const resultadoEliminacion = await exports.eliminarPuntoEntregaPorClienteId(clienteObjectId);
+    await Usuario.findOneAndDelete({ _id: clienteObjectId });
+    res.json({
+      msg: "Usuario y puntos de entrega asociados eliminados con éxito",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Ocurrió un error al eliminar el cliente");
+  }
+};
+
+// exports.eliminarCliente = async (req, res) => {
+//   try {
+//     let usuario = await Usuario.findById(req.params.id);
+
+//     if (!usuario) {
+//       res.status(404).json({ msg: "No existe el Usuario" });
+//     }
+
+//     await Usuario.findOneAndDelete({ _id: req.params.id });
+
+//     res.json({ msg: "Usuario eliminado con exito" });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send("ocurrio un error");
+//   }
+// };
 
 exports.listarSecretas = async (req, res) => {
   try {
