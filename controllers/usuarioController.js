@@ -19,11 +19,15 @@ exports.Login = async (req, res) => {
         usuario = await Purificadora.findOne({ email });
       }
     }
-    if (!usuario) return res.status(401).send("El correo no existe");
+    if (!usuario) {
+      return res.status(401).send("El correo no existe");
+    }
     // if (usuario) return res.status(200).send("El correo  existe");
     console.log("Password recibido:", password1);
     const isPasswordValid = await bcrypt.compare(password1, usuario.password1);
-    if (!isPasswordValid) return res.status(401).send("Contraseña incorrecta");
+    if (!isPasswordValid) {
+      return res.status(401).send("Contraseña incorrecta");
+    }
 
     // Verificar si el usuario tiene un rol
     if (!usuario.rol) {
@@ -42,7 +46,7 @@ exports.Login = async (req, res) => {
 
 exports.perfilUsuario = async (req, res) => {
   try {
-    const correo = req.params.correo;
+    const { correo } = req.params.correo;
     // Buscar el usuario por correo en la base de datos
     const usuario = await Usuario.findOne({ correo });
     // Verificar si el usuario existe
@@ -131,22 +135,15 @@ exports.EstadoUsuario = async (req, res) => {
 
 exports.crearUsuario = async (req, res) => {
   try {
-    console.log("req.body:", req.body); // Agrega este registro
-    // let password1 = req.body.password1;
-    // console.log("password=>:", password1); // Agrega este registro
     let nombre = req.body.nombre;
-    console.log("nombre=> :", nombre); // Agrega este registro
     let telefono = req.body.telefono;
-    let email = req.body.email; // Cambio de 'email' a 'email'
-    // let pregunta = req.body.pregunta;
-    // let respuesta = req.body.respuesta;
+    let email = req.body.email;
     let longitud = req.body.longitud; // Agregar longitud
     let latitud = req.body.latitud; // Agregar latitud
     let numCasa = req.body.numCasa; // Agregar obtenerUsuarioById
     let municipio = req.body.municipio; // Agregar obtenerUsuarioById
     let colonia = req.body.colonia; // Agregar obtenerUsuarioById
-    // const salt = await bcrypt.genSalt(10);
-    // const hashedPassword = await bcrypt.hash(password1, salt);
+
     const record = await Usuario.findOne({ email: email });
     if (record) {
       return res.status(400).send({ message: "El email ya está registrado" });
@@ -164,12 +161,6 @@ exports.crearUsuario = async (req, res) => {
     });
 
     const resultado = await usuario.save();
-    const { _id } = await resultado.toJSON();
-    const token = jwt.sign({ _id: _id }, "secret");
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    });
 
     console.log("Registro exitoso:", resultado); // Mensaje de éxito en la consola
     res.json({
@@ -276,8 +267,8 @@ exports.obtenerUsuarios = async (req, res) => {
 
 exports.actualizarPasswordxCorreo = async (req, res) => {
   try {
-    let correo = req.body.correo;
-    let token = req.body.token;
+    let { correo } = req.body.correo;
+    let { token } = req.body.token;
     let nuevaPassword = req.body.nueva;
 
     // Verificar si nuevaPassword está definido y no es una cadena vacía
@@ -314,8 +305,8 @@ exports.actualizarPasswordxCorreo = async (req, res) => {
 
 exports.actualizarPasswordxPregunta = async (req, res) => {
   try {
-    let pregunta = req.body.pregunta;
-    let respuesta = req.body.respuesta;
+    let { pregunta } = req.body.pregunta;
+    let { respuesta } = req.body.respuesta;
     let nuevaPassword = req.body.nueva;
     console.log("pregunta=>", pregunta);
     console.log("respuesta=>", respuesta);
@@ -360,7 +351,8 @@ exports.actualizarPasswordxPregunta = async (req, res) => {
 
 const { Ruta } = require("../Models/RutaModel");
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Types.ObjectId;
+const RutaModel = require("../Models/RutaModel");
+const { ObjectId } = mongoose.Types.ObjectId;
 
 exports.eliminarPuntoEntregaPorClienteId = async (clienteId) => {
   try {
@@ -369,7 +361,7 @@ exports.eliminarPuntoEntregaPorClienteId = async (clienteId) => {
       "puntosDeEntrega.clienteId": clienteObjectId,
     });
     if (!rutas || rutas.length === 0) {
-      return null
+      return null;
     }
     for (let i = 0; i < rutas.length; i++) {
       const ruta = rutas[i];
@@ -391,9 +383,6 @@ exports.eliminarPuntoEntregaPorClienteId = async (clienteId) => {
   }
 };
 
-
-
-
 exports.eliminarCliente = async (req, res) => {
   try {
     const usuario = await Usuario.findById(req.params.id);
@@ -402,7 +391,9 @@ exports.eliminarCliente = async (req, res) => {
       return res.status(404).json({ msg: "No existe el Usuario" });
     }
     const clienteObjectId = usuario._id;
-    const resultadoEliminacion = await exports.eliminarPuntoEntregaPorClienteId(clienteObjectId);
+    const resultadoEliminacion = await exports.eliminarPuntoEntregaPorClienteId(
+      clienteObjectId
+    );
     await Usuario.findOneAndDelete({ _id: clienteObjectId });
     res.json({
       msg: "Usuario y puntos de entrega asociados eliminados con éxito",

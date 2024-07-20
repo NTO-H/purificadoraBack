@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 // Define el esquema para puntos de entrega
 const PuntoDeEntregaSchema = mongoose.Schema({
+  // clienteId: { type: String, required: true },
   clienteId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuarios" },
 });
 
@@ -25,3 +26,5 @@ const RutaSchema = mongoose.Schema({
 module.exports = {
   Ruta: mongoose.model("Ruta", RutaSchema),
 };
+
+

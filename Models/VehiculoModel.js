@@ -32,3 +32,4 @@ const VehiculoSchema = mongoose.Schema({
 module.exports = {
   Vehiculo: mongoose.model("Vehiculo", VehiculoSchema),
 };
+

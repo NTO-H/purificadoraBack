@@ -5,16 +5,16 @@ require("../Routes/PurificadoraRoute");
 
 exports.registroPurificadora = async (req, res) => {
   try {
-    let nombre = req.body.nombre;
-    let telefono = req.body.telefono;
-    let email = req.body.email; // Cambio de 'email' a 'email'
-    let longitud = req.body.longitud; // Agregar longitud
-    let latitud = req.body.latitud; // Agregar latitud
-    let purificadoraNombre = req.body.purificadoraNombre;
-    let calle = req.body.calle;
-    let codigoPostal = req.body.codigoPostal;
-    let estado = req.body.estado;
-    let numero = req.body.numero;
+    let { nombre } = req.body;
+    let { telefono } = req.body.telefono;
+    let { email } = req.body.email; // Cambio de 'email' a 'email'
+    let { longitud } = req.body.longitud; // Agregar longitud
+    let { latitud } = req.body.latitud; // Agregar latitud
+    let { purificadoraNombre } = req.body.purificadoraNombre;
+    let { calle } = req.body.calle;
+    let { codigoPostal } = req.body.codigoPostal;
+    let { estado } = req.body.estado;
+    let { numero } = req.body.numero;
     let usuario = "";
     let password1 = "";
     let estatus = "";
@@ -124,7 +124,8 @@ exports.eliminarRuta = async (req, res) => {
 
 // Controlador: PurificadoraController.js
 
-exports.registroPuntoEntregaEnRuta = async (req, res) => {
+// exports.registroPuntoEntregaEnRuta = async (req, res) => {
+exports.cliente = async (req, res) => {
   try {
     console.log("Contenido de req.body:", req.body);
     let { puntosDeEntrega } = req.body;
@@ -182,7 +183,7 @@ exports.registroPuntoEntregaEnRuta = async (req, res) => {
   }
 };
 
-exports.eliminarPuntoEntrega = async (req, res) => {
+exports.deleteClientRute = async (req, res) => {
   try {
     const puntoEntregaId = req.params.id;
     // Busca todas las rutas que contienen el punto de entrega con el id específico
@@ -297,7 +298,7 @@ exports.updatePurificadora = async (req, res) => {
   }
 };
 
-exports.registroRuta = async (req, res) => {
+exports.crearRuta = async (req, res) => {
   try {
     const {
       nombreRuta,
@@ -308,6 +309,8 @@ exports.registroRuta = async (req, res) => {
       puntosDeEntrega,
       diasAsignados,
     } = req.body;
+    console.table(req.body);
+    // console.table(req);
 
     // Verificar si ya existe una ruta con ese nombre
     const existencia = await Ruta.find({ nombreRuta: nombreRuta });
@@ -319,15 +322,21 @@ exports.registroRuta = async (req, res) => {
         .json({ message: "Ya existe una ruta con ese nombre" });
     }
 
-    // Formatear puntosDeEntrega correctamente
-    const formattedPuntosDeEntrega = puntosDeEntrega.flatMap((punto) =>
-      punto.clienteId.map((clienteId) => ({
-        municipio: punto.municipio,
-        colonia: punto.colonia,
-        clienteId: clienteId.toString(), // Convertir clienteId a cadena
-      }))
-    );
+    const formattedPuntosDeEntrega = [];
 
+    puntosDeEntrega.forEach((punto) => {
+      // Iterar sobre cada array interno de clienteIds
+      punto.clienteId.forEach((clienteIdArray) => {
+        // Iterar sobre cada clienteId dentro del array
+        clienteIdArray.forEach((clienteId) => {
+          formattedPuntosDeEntrega.push({
+            // municipio: punto.municipio,
+            // colonia: punto.colonia,
+            clienteId: clienteId.toString(), // Convertir clienteId a cadena
+          });
+        });
+      });
+    });
     // Crear una nueva instancia del modelo Ruta
     const nuevaRuta = new Ruta({
       nombreRuta,
@@ -338,10 +347,11 @@ exports.registroRuta = async (req, res) => {
       puntosDeEntrega: formattedPuntosDeEntrega,
       diasAsignados,
     });
+    console.table(nuevaRuta);
 
     // Guardar la nueva ruta en la base de datos
     const rutaGuardada = await nuevaRuta.save();
-    console.log(rutaGuardada);
+    // console.log(rutaGuardada);
     res.status(201).json(rutaGuardada);
   } catch (error) {
     console.error("Error al agregar la ruta:", error);
@@ -372,6 +382,7 @@ function obtenerFechaYYYYMMDD() {
 
   return `${dia}-${mes}-${año}`;
 }
+
 // !Importate :Hacer modificaciones de datos
 exports.addSalida = async (req, res) => {
   try {
@@ -382,7 +393,7 @@ exports.addSalida = async (req, res) => {
       puntosDeEntrega,
       cantidadBotellas,
     } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
 
     const formattedPuntosDeEntrega = puntosDeEntrega.map((clienteId) => ({
       clienteId: clienteId.toString(), // Convertir clienteId a cadena
@@ -402,24 +413,92 @@ exports.addSalida = async (req, res) => {
 
     // Guardar la nueva ruta en la base de datos
     const rutaGuardada = await nuevaRuta.save();
-    console.log(rutaGuardada);
+    // console.log(rutaGuardada);
     res.status(201).json(rutaGuardada);
   } catch (error) {
     console.error("Error al agregar la ruta:", error);
     res.status(500).json({ message: "Error al agregar la ruta", error });
   }
 };
+//
+exports.updateEstadoSalida = async (req, res) => {
+  try {
+    const { id } = req.params; // Obtener el ID de la ruta desde los parámetros de la URL
+    const { estado } = req.body; // Obtener el nuevo estado desde el cuerpo de la solicitud
+    console.log(estado);
+    
+    const rutaActualizada = await Salida.findByIdAndUpdate(
+      id,
+      { estado },
+      { new: true } // Devuelve el documento modificado
+    );
 
-exports.getObtenerRutasXdias = async (req, res) => {
+    if (!rutaActualizada) {
+      return res.status(404).json({ message: "Ruta no encontrada" });
+    }
+    // console.log(rutaActualizada);
+    res.status(200).json(rutaActualizada);
+  } catch (error) {
+    console.error("Error al actualizar el estado de la ruta:", error);
+    res
+      .status(500)
+      .json({ message: "Error al actualizar el estado de la ruta", error });
+  }
+};
+
+//
+//
+exports.updateSalida = async (req, res) => {
+  try {
+    const { id } = req.params; // Obtener el ID de la ruta desde los parámetros de la URL
+    const {
+      nombreRuta,
+      repartidorId,
+      vehiculoId,
+      puntosDeEntrega,
+      cantidadBotellas,
+    } = req.body;
+
+    const formattedPuntosDeEntrega = puntosDeEntrega.map((clienteId) => ({
+      clienteId: clienteId.toString(), // Convertir clienteId a cadena
+    }));
+
+    // Buscar la ruta existente por ID
+    const rutaExistente = await Salida.findById(id);
+
+    if (!rutaExistente) {
+      return res.status(404).json({ message: "Ruta no encontrada" });
+    }
+
+    // Actualizar los campos de la ruta existente con los nuevos datos
+    rutaExistente.nombreRuta = nombreRuta;
+    rutaExistente.repartidorId = repartidorId;
+    rutaExistente.vehiculoId = vehiculoId;
+    rutaExistente.puntosDeEntrega = formattedPuntosDeEntrega;
+    rutaExistente.cantidadBotellas = cantidadBotellas;
+    rutaExistente.diasSalida = obtieneDiaActual();
+    rutaExistente.fechaSalida = obtenerFechaYYYYMMDD();
+
+    // Guardar los cambios en la base de datos
+    const rutaActualizada = await rutaExistente.save();
+
+    res.status(200).json(rutaActualizada);
+  } catch (error) {
+    console.error("Error al actualizar la ruta:", error);
+    res.status(500).json({ message: "Error al actualizar la ruta", error });
+  }
+};
+
+exports.getObtenerRutasXdia = async (req, res) => {
   try {
     let diasSemana = [
       "domingo",
       "lunes",
       "martes",
-      "miércoles",
+      "miercoles",
       "jueves",
       "viernes",
-      "sábado",
+      "sabado",
     ];
     let fecha = new Date(); //Con la clase date obtendremos el dia
     let diaSemana = diasSemana[fecha.getDay()];
@@ -487,6 +566,46 @@ exports.getDetalleRutaById = async (req, res) => {
   }
 };
 
+// !
+exports.addSalida = async (req, res) => {
+  try {
+    const {
+      nombreRuta,
+      repartidorId,
+      vehiculoId,
+      puntosDeEntrega,
+      cantidadBotellas,
+    } = req.body;
+    const formattedPuntosDeEntrega = puntosDeEntrega.map((clienteId) => ({
+      clienteId: clienteId.toString(), // Convertir clienteId a cadena
+    }));
+
+
+
+    
+
+  const fecha=Utils.getFechaDDMMYYYY();
+    // Crear una nueva instancia del modelo Ruta
+    const nuevaRuta = new Salida({
+      nombreRuta,
+      repartidorId,
+      vehiculoId,
+      estado: "enviado",
+      puntosDeEntrega: formattedPuntosDeEntrega,
+      cantidadBotellas: cantidadBotellas,
+      diasSalida: obtieneDiaActual(),
+      fechaSalida: fecha,
+    });
+
+    // Guardar la nueva ruta en la base de datos
+    const rutaGuardada = await nuevaRuta.save();
+    // console.log(rutaGuardada);
+    res.status(201).json(rutaGuardada);
+  } catch (error) {
+    console.error("Error al agregar la ruta:", error);
+    res.status(500).json({ message: "Error al agregar la ruta", error });
+  }
+};
 // exports.registroRuta = async (req, res) => {
 //   try {
 //     const {

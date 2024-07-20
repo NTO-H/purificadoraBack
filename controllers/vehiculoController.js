@@ -1,5 +1,6 @@
 const { Vehiculo } = require("../Models/VehiculoModel");
-require("../Routes/RepartidorRoute");
+// require("../Routes/RepartidorRoute");
+const { Ruta } = require("../Models/RutaModel");
 
 exports.crearVehiculo = async (req, res) => {
   try {
@@ -7,7 +8,7 @@ exports.crearVehiculo = async (req, res) => {
     let modelo = req.body.modelo;
     // let anio = req.body.anio;
     let placas = req.body.placas;
-      let diasAsignados = req.body.diasAsignados;
+    let diasAsignados = req.body.diasAsignados;
     const record = await Vehiculo.findOne({ placas: placas });
     if (record) {
       return res.status(400).send({ message: "El anio ya está registrado" });
@@ -15,8 +16,8 @@ exports.crearVehiculo = async (req, res) => {
     const vehiculo = new Vehiculo({
       marca: marca,
       modelo: modelo,
-      placas: placas, 
-       diasAsignados :diasAsignados
+      placas: placas,
+      diasAsignados: diasAsignados,
 
       // Agregar numCasa al objeto usuario
     });
@@ -33,7 +34,6 @@ exports.crearVehiculo = async (req, res) => {
   }
 };
 
-
 exports.getVehiculos = async (req, res) => {
   try {
     // Excluye el usuario con el rol "admin" de la consulta
@@ -41,6 +41,34 @@ exports.getVehiculos = async (req, res) => {
     res.json(resultado);
   } catch (error) {
     console.log("error de consulta");
+  }
+};
+
+exports.getVehiculosDisponibles = async (req, res) => {
+  try {
+    // Excluye el usuario con el rol "admin" de la consulta
+    const vehiculos = await Vehiculo.find();
+    if (!vehiculos) {
+      res
+        .status(500)
+        .json({ message: "Error al obtener los vehiculos ", error });
+    }
+    const rutas = await Ruta.find();
+    if (!rutas) {
+      res.status(500).json({ message: "Error al obtener las rutas ", error });
+    }
+
+    const vehiculosEnRutas = rutas.map((ruta) => ruta.vehiculoId.toString());
+    const vehiculosSinRutas = vehiculos.filter(
+      (vehiculo) => !vehiculosEnRutas.includes(vehiculo._id.toString())
+    );
+
+    res.status(200).json(vehiculosSinRutas);
+  } catch (error) {
+    console.log("error de consulta");
+    res
+      .status(500)
+      .json({ message: "Error al obtener los Vehiculos sin ruta", error });
   }
 };
 
@@ -63,7 +91,7 @@ exports.eliminarVehiculo = async (req, res) => {
 exports.actualizaDatos = async (req, res) => {
   try {
     const { id } = req.params;
-    const { marca, anio, modelo, placas } = req.body;
+    const { marca, anio, modelo, placas, diasAsignados } = req.body;
     // Busca y actualiza el usuario en la base de datos
     let cliente = await Vehiculo.findById(req.params.id);
     if (!cliente) {
@@ -73,7 +101,7 @@ exports.actualizaDatos = async (req, res) => {
     // Actualiza el usuario con los datos proporcionados en el cuerpo de la solicitud
     const vehiculoActualizado = await Vehiculo.findByIdAndUpdate(
       id,
-      { marca, anio, modelo, placas },
+      { marca, anio, modelo, placas, diasAsignados },
       { new: true }
     );
 

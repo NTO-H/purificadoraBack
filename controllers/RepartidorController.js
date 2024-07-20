@@ -1,17 +1,21 @@
 const { Repartidor } = require("../Models/RepartidorModel");
+const { Ruta } = require("../Models/RutaModel");
 require("../Routes/RepartidorRoute");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { Salida } = require("../Models/SalidaModel");
+const Utils = require("../Shareds/Utils");
+
+const utils = new Utils();
 
 exports.crearRepartidores = async (req, res) => {
   try {
-    let password1 = req.body.password1;
-    let nombre = req.body.nombre;
-    let telefono = req.body.telefono;
+    let { password1, nombre, telefono, numCasa } = req.body;
     let email = req.body.email;
-    let numCasa = req.body.numCasa;
     let diasAsignados = req.body.diasAsignados;
+
+    const fecha = utils.getFechaDDMMYYYY();
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password1, salt);
     const record = await Repartidor.findOne({ email: email });
@@ -25,17 +29,10 @@ exports.crearRepartidores = async (req, res) => {
       password1: hashedPassword,
       numCasa: numCasa,
       diasAsignados: diasAsignados,
+      fechaDeAgregacion: fecha,
     });
 
     const resultado = await repartidor.save();
-    const { _id } = await resultado.toJSON();
-
-    const token = jwt.sign({ _id: _id }, "secret");
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    });
-
     console.log("Registro exitoso:", resultado); // Mensaje de éxito en la consola
     res.json({
       repartidor: resultado._id,
@@ -51,15 +48,18 @@ exports.Login = async (req, res) => {
   try {
     const { email, password1 } = req.body;
     const repartidor = await Repartidor.findOne({ email });
-    if (!repartidor) return res.status(401).send("El correo no existe");
-    // if (usuario) return res.status(200).send("El correo  existe");
+    if (!isPasswordValid) {
+      return res.status(401).send("Contraseña incorrecta");
+    }
     console.log("Password recibido:", password1);
     const isPasswordValid = await bcrypt.compare(
       password1,
       repartidor.password1
     );
 
-    if (!isPasswordValid) return res.status(401).send("Contraseña incorrecta");
+    if (!isPasswordValid) {
+      return res.status(401).send("Contraseña incorrecta");
+    }
     if (!repartidor.rol) {
       return res.status(401).send("El usuario no tiene un rol asignado");
     }
@@ -67,6 +67,7 @@ exports.Login = async (req, res) => {
       { _id: repartidor._id, rol: repartidor.rol },
       "secret"
     );
+
     return res.status(200).json({ token, rol: repartidor.rol });
   } catch (error) {
     console.log("ohh no :", error);
@@ -81,6 +82,38 @@ exports.getRepartidores = async (req, res) => {
     res.json(resultado);
   } catch (error) {
     console.log("error de consulta");
+  }
+};
+
+exports.obtenerRepartidoresSinRuta = async (req, res) => {
+  try {
+    // Excluye el usuario con el rol "admin" de la consulta
+    const repartidores = await Repartidor.find();
+    if (!repartidores) {
+      res
+        .status(500)
+        .json({ message: "Error al obtener los repartidores ", error });
+    }
+    const rutas = await Ruta.find();
+    if (!rutas) {
+      res.status(500).json({ message: "Error al obtener las rutas ", error });
+    }
+
+    const repartidoresEnRutas = rutas.map((ruta) =>
+      ruta.repartidorId.toString()
+    );
+    console.log(repartidoresEnRutas);
+    const repartidoresSinRutas = repartidores.filter(
+      (repartidor) => !repartidoresEnRutas.includes(repartidor._id.toString())
+    );
+    console.log(repartidoresSinRutas);
+
+    res.status(200).json(repartidoresSinRutas);
+  } catch (error) {
+    console.log("error de consulta");
+    res
+      .status(500)
+      .json({ message: "Error al obtener los repartidores sin ruta", error });
   }
 };
 
@@ -103,8 +136,7 @@ exports.eliminarRepartidor = async (req, res) => {
 exports.actualizaDatos = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, email, telefono, numCasa } = req.body;
-    // Busca y actualiza el usuario en la base de datos
+    const { nombre, email, telefono, numCasa, diasAsignados } = req.body;
     let cliente = await Repartidor.findById(req.params.id);
     if (!cliente) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
@@ -113,7 +145,7 @@ exports.actualizaDatos = async (req, res) => {
     // Actualiza el usuario con los datos proporcionados en el cuerpo de la solicitud
     const usuarioActualizado = await Repartidor.findByIdAndUpdate(
       id,
-      { nombre, email, telefono, numCasa },
+      { nombre, email, telefono, numCasa, diasAsignados },
       { new: true }
     );
 
@@ -142,33 +174,12 @@ exports.obtenerRepartidorById = async (req, res) => {
   }
 };
 
-function obtenerFechaDDMMYYYY() {
-  let fecha = new Date();
-  let año = fecha.getFullYear();
-  let mes = String(fecha.getMonth() + 1).padStart(2, "0");
-  let dia = String(fecha.getDate()).padStart(2, "0");
-
-  return `${dia}-${mes}-${año}`;
-}
-
 exports.getObtenerSalidaxClienteId = async (req, res) => {
   try {
-    let diasSemana = [
-      "domingo",
-      "lunes",
-      "martes",
-      "miércoles",
-      "jueves",
-      "viernes",
-      "sábado",
-    ];
-
-    console.log(req.params.id);
-    console.log(obtenerFechaDDMMYYYY());
-
+    const fecha = utils.getFechaDDMMYYYY();
     const salida = await Salida.find({
       repartidorId: req.params.id,
-      fechaSalida: obtenerFechaDDMMYYYY(),
+      fechaSalida: fecha,
     })
       .populate("repartidorId")
       .populate("vehiculoId")
