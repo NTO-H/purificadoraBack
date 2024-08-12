@@ -6,6 +6,8 @@ const PuntoDeEntregaSchema = mongoose.Schema({
   cantidadEntregada:{ type: Number, required: false, default: 0 },
   clienteId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuarios" },
 });
+
+
 // Define el esquema para la ruta
 const SalidaSchema = mongoose.Schema({
   nombreRuta: { type: String, required: true },

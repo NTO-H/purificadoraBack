@@ -9,6 +9,7 @@ const PoliticaNegocioSchema = mongoose.Schema({
     type:String,
     required: true,
   },
+  
   fechaCreacion: {
     type: Date,
     default: Date.now(),
