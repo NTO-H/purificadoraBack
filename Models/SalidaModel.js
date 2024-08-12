@@ -13,7 +13,7 @@ const SalidaSchema = mongoose.Schema({
   nombreRuta: { type: String, required: true },
   repartidorId: {type: mongoose.Schema.Types.ObjectId,ref: "Repartidores",required: true,},
   vehiculoId: {type: mongoose.Schema.Types.ObjectId,ref: "Vehiculo",required: true,},
-  estado: {type: String,enum: ["enviado", "recibido", "en_espera", "en_transito", "finalizada"],required: false,default: "en_espera",},
+  estado: {type: String,enum: ["enviado", "recibido", "en_espera", "en_transito", "finalizada","confirmado"],required: false,default: "en_espera",},
   cantidadBotellas: {type: Number,required: false,default: 0,}, // Valor predeterminado de 0
   puntosDeEntrega: [PuntoDeEntregaSchema],
   diasSalida: { type: String, required: false },
