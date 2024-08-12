@@ -106,7 +106,8 @@ json response get
 Obtener colonias por municipio
 https://api.copomex.com/query/get_colonia_por_municipio/{municipio}?token={tokenCOPOMEX}
 Example
-https://api.copomex.com/query/get_colonia_por_municipio/Jaltocan?token=e5c85720-9a02-4f1b-9175-9d922653ae7e
+
+GET https://api.copomex.com/query/get_colonia_por_municipio/Jaltocan?token=e5c85720-9a02-4f1b-9175-9d922653ae7e
 
 json respuesta
 {

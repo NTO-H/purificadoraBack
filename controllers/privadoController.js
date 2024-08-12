@@ -1,175 +1,63 @@
+const {Purificadoras} = require("../Models/PurificadoraModel");
+exports.getPurificadoras = async (req, res) => {
+  try {
+    let purificadoras = await Purificadoras.find();
 
-//   // Ruta agregarPolitica
-// const { Politica, Pregunta} = require("../models/Privado"); // Assuming models/Privado.js is in the same directory
-
-// //   const Pregunta = require("../models/Pregunta");
-  
-
-// exports.agregarPolitica = async (req, res) => {
-//   try{
-
-
-//     const politica = new Politica(req.body);
-//     const resultado = await politica.save(); // Corrección aquí
-//     res.status(200).send(resultado);
-  
-
-//    console.log(req.body);// esto permite mostrar los resultados del json /    res.status(201).json(resultado);
-  
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Ocurrió un error al agregar politica");
-//   }
-// };
+    res.status(200).json(purificadoras);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
 
 
 
-// exports.getPoliticas = async (req, res) => {
-//     try {
-//       const politica = await Politica.find();
-//       res.json(politica);
-//     } catch {
-//       console.log("error");
-//     }
-//   }
-//   //
-//   //
- 
-  
-// exports.agregarPregunta = async (req, res) => {
-//   try{
+exports.registroPurificadora = async (req, res) => {
+  try {
+    let { nombre } = req.body;
+    let { telefono } = req.body.telefono;
+    let { email } = req.body.email; // Cambio de 'email' a 'email'
+    let { longitud } = req.body.longitud; // Agregar longitud
+    let { latitud } = req.body.latitud; // Agregar latitud
+    let { purificadoraNombre } = req.body.purificadoraNombre;
+    let { calle } = req.body.calle;
+    let { codigoPostal } = req.body.codigoPostal;
+    let { estado } = req.body.estado;
+    let { numero } = req.body.numero;
+    let usuario = "";
+    let password1 = "";
+    let estatus = "";
 
+    const record = await Purificadoras.findOne({ email: email });
+    if (record) {
+      return res.status(400).send({ message: "El correo ya está registrado" });
+    }
 
-//     const pregunta = new Pregunta(req.body);
-//     const resultado = await pregunta.save(); // Corrección aquí
-//     res.status(200).send(resultado);
-  
+    const purificadoraAdmin = new Purificadoras({
+      nombre: nombre,
+      email: email,
+      telefono: telefono,
+      purificadoraNombre: purificadoraNombre,
+      calle: calle,
+      longitud: longitud,
+      latitud: latitud,
+      codigoPostal: codigoPostal,
+      estado: estado,
+      numero: numero,
+      estatus: estatus,
+      usuario: usuario,
+      password1: password1,
+    });
 
-//    console.log(req.body);// esto permite mostrar los resultados del json /    res.status(201).json(resultado);
-  
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Ocurrió un error al agregar politica");
-//   }
-// };
-
-// // getPoliticas
-
-
-
-
-// exports.getPreguntas = async (req, res) => {
-//     try {
-//       const pregunta = await Pregunta.find();
-//       res.json(pregunta);
-//     } catch {
-//       console.log("error");
-//     }
-//   };
-
-
-//   exports.actualizarPregunta = async (req, res) => {
-//     try {
-//       const { titulo, contenido } = req.body;
-//       let pregunta = await Pregunta.findById(req.params.id);
-//       if (!pregunta) {
-//         return res.status(404).json({ msg: 'No existe la pregunta' }); // Devolver respuesta y salir del controlador
-//       }
-//       pregunta.titulo = titulo;
-//       pregunta.contenido = contenido;
-  
-//       pregunta = await Pregunta.findOneAndUpdate({ _id: req.params.id }, pregunta, { new: true });
-//       return res.json(pregunta); // Devolver respuesta y salir del controlador
-//     } catch (error) {
-//       console.error(error);
-//       return res.status(500).send('Hubo un error'); // Devolver respuesta y salir del controlador
-//     }
-//   };
-  
-
-// exports.obtenerPregunta = async (req, res) => {
-//   try {
-//     let pregunta = await Pregunta.findById(req.params.id);
-//     if (!pregunta) {
-//       res.status(404).json({ msg: 'No existe la pregunta' });
-//     }
-//     pregunta = await Pregunta.findOneAndUpdate({ _id: req.params.id }, pregunta, { new: true });
-//     res.json(pregunta);
-//   } catch (error) {
-//     res.status(500).send('hubo un error');
-//   }
-// }
-
-
-// exports.eliminarPregunta = async (req, res) => {
-//   try {
-//     let pregunta = await Pregunta.findById(req.params.id);
-
-//     if (!pregunta) {
-//       res.status(404).json({ msg: 'No existe la pregunta' });
-//     }
-    
-//     await Pregunta.findOneAndDelete({ _id: req.params.id });
-//     res.json({ msg: 'pregunta eliminado con exito' });
-    
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send('ocurrio un error');
-//   }
-// }
-
-// // politica
-
-
-  
-// exports.actualizarPolitica = async (req, res) => {
-//   try {
-//     const { titulo, contenido } = req.body;
-//     let politica = await Politica.findById(req.params.id);
-//     if (!politica) {
-//       return   res.status(404).json({ msg: 'No existe la politica' });
-//     }
-//     politica.titulo = titulo;
-//     politica.contenido = contenido;
-
-//     politica = await Politica.findOneAndUpdate({ _id: req.params.id }, politica, { new: true });
-//     return res.json(politica);
-//   } catch (error) {
-//     res.status(500).send('hubo un error');
-//   }
-  
-// }
-
-// exports.obtenerPolitica = async (req, res) => {
-//   try {
-//     let politica = await Politica.findById(req.params.id);
-//     if (!politica) {
-//       res.status(404).json({ msg: 'No existe la politica' });
-//     }
-//     politica = await Politica.findOneAndUpdate({ _id: req.params.id }, politica, { new: true });
-//     res.json(politica);
-//   } catch (error) {
-//     res.status(500).send('hubo un error');
-//   }
-// }
-
-// exports.eliminarPolitica = async (req, res) => {
-//   try {
-//     let politica = await Politica.findById(req.params.id);
-
-//     if (!politica) {
-//       res.status(404).json({ msg: 'No existe la politica' });
-//     }
-    
-//     await Poli tica.findOneAndDelete({ _id: req.params.id });
-//     res.json({ msg: 'politica eliminado con exito' });
-    
-    
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send('ocurrio un error');
-//   }
-// }
-
+    const resultado = await purificadoraAdmin.save();
+    console.log("Registro exitoso:", resultado); // Mensaje de éxito en la consola
+    res.json({
+      purificadoraAdmin: resultado._id,
+      message: "exitoso",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error en el servidor: " + error);
+  }
+};

@@ -12,9 +12,8 @@ const corsOptions = {
   origin: [
     "https://purificadora.vercel.app",
     "http://localhost:4200",
-    "http://localhost:49466",
     "https://fd1v4w8b-4200.usw3.devtunnels.ms/",
-    "http://192.168.0.105:4200",
+    // "http://192.168.0.114:4200",
   ],
   credentials: true,
 };
@@ -26,10 +25,14 @@ app.use(bodyParser.json());
 
 // Ruta para inicio de sesión
 app.use("/autentificacion", require("./Routes/AuthRoute"));
+// Ruta para acciones con rol de Administrador de la pagina
+app.use("/adminPage", require("./Routes/PrivadoRoute"));
 // Ruta para acciones con rol de Administrador
 app.use("/purificadoraAdmin", require("./Routes/PurificadoraRoute"));
 // Ruta para acciones con rol de Administrador
 app.use("/usuarios", require("./Routes/UsuarioRoute"));
+// Ruta para acciones con rol de Administrador
+app.use("/direccion", require("./Routes/DireccionRoute"));
 // Ruta para acciones con rol de Administrador
 app.use("/vehiculos", require("./Routes/VehiculoRoute"));
 // Ruta para acciones con rol de Reparitor

@@ -5,50 +5,14 @@ require("../Routes/UsuarioRoute");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-exports.Login = async (req, res) => {
-  try {
-    const { email, password1 } = req.body;
-
-    let usuario;
-    usuario = await Usuario.findOne({ email });
-    // console.log("correo recibido:", email);
-    console.log("contraseña recibido:", password1);
-    if (!usuario) {
-      usuario = await Repartidor.findOne({ email });
-      if (!usuario) {
-        usuario = await Purificadora.findOne({ email });
-      }
-    }
-    if (!usuario) {
-      return res.status(401).send("El correo no existe");
-    }
-    // if (usuario) return res.status(200).send("El correo  existe");
-    console.log("Password recibido:", password1);
-    const isPasswordValid = await bcrypt.compare(password1, usuario.password1);
-    if (!isPasswordValid) {
-      return res.status(401).send("Contraseña incorrecta");
-    }
-
-    // Verificar si el usuario tiene un rol
-    if (!usuario.rol) {
-      // Si el usuario no tiene un rol, enviar un mensaje de error
-      return res.status(401).send("El usuario no tiene un rol asignado");
-    }
-
-    // Si el usuario tiene un rol, firmar el token JWT con el rol incluido
-    const token = jwt.sign({ _id: usuario._id, rol: usuario.rol }, "secret");
-    return res.status(200).json({ token, rol: usuario.rol });
-  } catch (error) {
-    console.log("ohh no :", error);
-    return res.status(500).send("Error en el servidor: " + error);
-  }
-};
 
 exports.perfilUsuario = async (req, res) => {
   try {
     const { correo } = req.params.correo;
     // Buscar el usuario por correo en la base de datos
-    const usuario = await Usuario.findOne({ correo });
+    const usuario = await Usuario.findOne({ correo })
+    .populate("municipioId.municipio")
+    .populate("coloniaId.colonia");
     // Verificar si el usuario existe
     if (!usuario) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
@@ -98,6 +62,32 @@ exports.verifyTokenAndRole = (role) => (req, res, next) => {
   next();
 };
 
+exports.getColoniasPorClientes = async (req, res) => {
+  try {   
+     const clientes = await Usuario.find({ rol: { $ne: "ADMINPG" } });
+
+
+    const resultado = {};
+
+    clientes.forEach((cliente) => {
+      const { municipio, colonia, nombre } = cliente;
+
+      if (!resultado[municipio]) {
+        resultado[municipio] = {};
+      }
+
+      if (!resultado[municipio][colonia]) {
+        resultado[municipio][colonia] = [];
+      }
+
+      resultado[municipio][colonia].push(nombre);
+    });
+
+    res.json(resultado);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener clientes agrupados", error });
+  }
+};
 // Ruta protegida para administradores
 exports.adminRoute = exports.verifyTokenAndRole("administrador");
 // Ruta protegida para clientes
@@ -143,6 +133,9 @@ exports.crearUsuario = async (req, res) => {
     let numCasa = req.body.numCasa; // Agregar obtenerUsuarioById
     let municipio = req.body.municipio; // Agregar obtenerUsuarioById
     let colonia = req.body.colonia; // Agregar obtenerUsuarioById
+
+console.table(req.body);
+
 
     const record = await Usuario.findOne({ email: email });
     if (record) {

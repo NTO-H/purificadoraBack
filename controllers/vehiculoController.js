@@ -36,7 +36,7 @@ exports.crearVehiculo = async (req, res) => {
 
 exports.getVehiculos = async (req, res) => {
   try {
-    // Excluye el usuario con el rol "admin" de la consulta
+    
     const resultado = await Vehiculo.find();
     res.json(resultado);
   } catch (error) {
@@ -46,7 +46,7 @@ exports.getVehiculos = async (req, res) => {
 
 exports.getVehiculosDisponibles = async (req, res) => {
   try {
-    // Excluye el usuario con el rol "admin" de la consulta
+   
     const vehiculos = await Vehiculo.find();
     if (!vehiculos) {
       res

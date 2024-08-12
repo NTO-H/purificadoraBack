@@ -2,23 +2,15 @@ const mongoose = require("mongoose");
 
 // Define el esquema para puntos de entrega
 const PuntoDeEntregaSchema = mongoose.Schema({
-  // clienteId: { type: String, required: true },
+  colonia: { type: String, required: true },
   clienteId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuarios" },
 });
 
 // Define el esquema para la ruta
 const RutaSchema = mongoose.Schema({
-  nombreRuta: { type: String, required: true },
-  repartidorId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Repartidores",
-    required: true,
-  },
-  vehiculoId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Vehiculo",
-    required: true,
-  },
+  nombreRuta: { type: String, unique: true, required: true },
+  repartidorId: {type: mongoose.Schema.Types.ObjectId,ref: "Repartidores",required: true},
+  vehiculoId: {type: mongoose.Schema.Types.ObjectId,ref: "Vehiculo",required: true},
   puntosDeEntrega: [PuntoDeEntregaSchema],
   diasAsignados: { type: Array, required: false },
 });
@@ -26,5 +18,3 @@ const RutaSchema = mongoose.Schema({
 module.exports = {
   Ruta: mongoose.model("Ruta", RutaSchema),
 };
-
-

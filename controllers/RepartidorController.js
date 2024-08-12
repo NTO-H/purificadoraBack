@@ -79,7 +79,7 @@ exports.getRepartidores = async (req, res) => {
   try {
     // Excluye el usuario con el rol "admin" de la consulta
     const resultado = await Repartidor.find();
-    res.json(resultado);
+    res.status(200).json(resultado);
   } catch (error) {
     console.log("error de consulta");
   }
@@ -149,10 +149,8 @@ exports.actualizaDatos = async (req, res) => {
       { new: true }
     );
 
-    console.log("Registro exitoso:"); // Mensaje de éxito en la consola
-
     res.status(200).json({
-      mensaje: "Rol actualizado correctamente",
+      mensaje: "Repartidor actualizado correctamente",
       usuario: usuarioActualizado,
     });
   } catch (error) {
@@ -180,6 +178,7 @@ exports.getObtenerSalidaxClienteId = async (req, res) => {
     const salida = await Salida.find({
       repartidorId: req.params.id,
       fechaSalida: fecha,
+      estado: { $ne: "cancelado" },
     })
       .populate("repartidorId")
       .populate("vehiculoId")

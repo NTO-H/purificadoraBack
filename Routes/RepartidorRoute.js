@@ -11,6 +11,7 @@ router.get(
 router.put("/actualiza/:id", RepartidorController.actualizaDatos);
 router.delete("/deleteRepartidor/:id", RepartidorController.eliminarRepartidor);
 router.get("/getDetalles/:id", RepartidorController.obtenerRepartidorById);
+// router.get("/clientes/:id", RepartidorController.getClientes);
 router.get(
   "/getObtenerSalidaxClienteId/:id",
   RepartidorController.getObtenerSalidaxClienteId
@@ -19,3 +20,7 @@ router.get(
 router.post("/signIn", RepartidorController.Login);
 router.get("/repartidores", RepartidorController.getRepartidores);
 module.exports = router;
+
+
+
+

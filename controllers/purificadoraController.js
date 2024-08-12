@@ -1,60 +1,23 @@
-const Purificadora = require("../Models/PurificadoraModel");
+const Purificadoras = require("../Models/PurificadoraModel");
 const { Ruta } = require("../Models/RutaModel");
+const { Repartidor } = require("../Models/RepartidorModel");
+const { Vehiculo } = require("../Models/VehiculoModel");
+
 const { Salida } = require("../Models/SalidaModel");
+const { Usuario } = require("../Models/UsuarioModel");
 require("../Routes/PurificadoraRoute");
+const Utils = require("../Shareds/Utils");
+const util = new Utils();
 
-exports.registroPurificadora = async (req, res) => {
-  try {
-    let { nombre } = req.body;
-    let { telefono } = req.body.telefono;
-    let { email } = req.body.email; // Cambio de 'email' a 'email'
-    let { longitud } = req.body.longitud; // Agregar longitud
-    let { latitud } = req.body.latitud; // Agregar latitud
-    let { purificadoraNombre } = req.body.purificadoraNombre;
-    let { calle } = req.body.calle;
-    let { codigoPostal } = req.body.codigoPostal;
-    let { estado } = req.body.estado;
-    let { numero } = req.body.numero;
-    let usuario = "";
-    let password1 = "";
-    let estatus = "";
-
-    const record = await Purificadora.findOne({ email: email });
-    if (record) {
-      return res.status(400).send({ message: "El correo ya está registrado" });
-    }
-
-    const purificadoraAdmin = new Purificadora({
-      nombre: nombre,
-      email: email,
-      telefono: telefono,
-      purificadoraNombre: purificadoraNombre,
-      calle: calle,
-      longitud: longitud,
-      latitud: latitud,
-      codigoPostal: codigoPostal,
-      estado: estado,
-      numero: numero,
-      estatus: estatus,
-      usuario: usuario,
-      password1: password1,
-    });
-
-    const resultado = await purificadoraAdmin.save();
-    console.log("Registro exitoso:", resultado); // Mensaje de éxito en la consola
-    res.json({
-      purificadoraAdmin: resultado._id,
-      message: "exitoso",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Error en el servidor: " + error);
-  }
-};
 
 exports.obtenePuricadoras = async (req, res) => {
   try {
-    const purificadoras = await Purificadora.find();
+    const purificadoras = await Purificadoras.find();
+if(purificadoras){
+  console.log("Consulta exitosa");
+}
+
+
     res.json(purificadoras);
   } catch (error) {
     console.log("error de consulta");
@@ -66,6 +29,7 @@ exports.obteneRutas = async (req, res) => {
     const rutas = await Ruta.find()
       .populate("repartidorId")
       .populate("vehiculoId")
+          .populate("puntosDeEntrega.clienteId")
       .exec();
     res.json(rutas);
   } catch (error) {
@@ -92,13 +56,13 @@ exports.getDetalleRutaById = async (req, res) => {
 
 exports.eliminarPuricadora = async (req, res) => {
   try {
-    let usuario = await Purificadora.findById(req.params.id);
+    let usuario = await Purificadoras.findById(req.params.id);
 
     if (!usuario) {
       res.status(404).json({ msg: "No existe el Usuario" });
     }
 
-    await Purificadora.findOneAndDelete({ _id: req.params.id });
+    await Purificadoras.findOneAndDelete({ _id: req.params.id });
     res.json({ msg: "Usuario eliminado con exito" });
   } catch (error) {
     console.log(error);
@@ -121,8 +85,6 @@ exports.eliminarRuta = async (req, res) => {
     res.status(500).send("ocurrio un error");
   }
 };
-
-// Controlador: PurificadoraController.js
 
 // exports.registroPuntoEntregaEnRuta = async (req, res) => {
 exports.cliente = async (req, res) => {
@@ -149,18 +111,11 @@ exports.cliente = async (req, res) => {
 
     const formattedPuntosDeEntrega = puntosDeEntrega.map((punto) => {
       // Validar que los campos necesarios existen
-      if (
-        // !punto.municipio ||
-        // !punto.colonia ||
-        // !punto.clienteId ||
-        !punto.clienteId
-      ) {
+      if (!punto.clienteId) {
         throw new Error("Formato de punto de entrega inválido");
       }
 
       return {
-        // municipio: punto.municipio,
-        // colonia: punto.colonia,
         clienteId: punto.clienteId.toString(), // Extraer el _id del cliente y convertir a cadena
       };
     });
@@ -218,14 +173,30 @@ exports.actualizarRuta = async (req, res) => {
       repartidorId,
       vehiculoId,
       diasAsignados,
-      // puntosDeEntrega,
+      puntosDeEntrega,
     } = req.body;
     // Encuentra la ruta por ID
     let ruta = await Ruta.findById(id);
     if (!ruta) {
       return res.status(404).json({ message: "Ruta no encontrada" });
     }
-
+    const formattedPuntosDeEntrega = [];
+  
+    puntosDeEntrega.forEach((punto) => {
+      if (Array.isArray(punto.clienteId)) {
+        punto.clienteId.forEach((clienteId) => {
+          formattedPuntosDeEntrega.push({
+            colonia: punto.colonia,
+            clienteId: clienteId.toString(), // Convertir clienteId a ObjectId
+          });
+        });
+      } else {
+        formattedPuntosDeEntrega.push({
+          colonia: punto.colonia,
+          clienteId: clienteId.toString(), // Convertir clienteId a ObjectId
+        });
+      }
+    });
     // Verificar si ya existe una ruta con ese nombre y con un ID diferente
     const existencia = await Ruta.findOne({
       nombreRuta: nombreRuta,
@@ -242,7 +213,7 @@ exports.actualizarRuta = async (req, res) => {
     ruta.repartidorId = repartidorId;
     ruta.vehiculoId = vehiculoId;
     ruta.diasAsignados = diasAsignados;
-    // ruta.puntosDeEntrega = puntosDeEntrega;
+    ruta.puntosDeEntrega = formattedPuntosDeEntrega;
 
     // Guarda los cambios en la base de datos
     const rutaActualizada = await ruta.save();
@@ -270,7 +241,7 @@ exports.updatePurificadora = async (req, res) => {
       telefono,
     } = req.body;
 
-    let purificadora = await Purificadora.findById(req.params.id);
+    let purificadora = await Purificadoras.findById(req.params.id);
 
     if (!purificadora) {
       res.status(404).json({ msg: "No existe el Usuario" });
@@ -286,7 +257,7 @@ exports.updatePurificadora = async (req, res) => {
     purificadora.latitud = latitud;
     purificadora.telefono = telefono;
 
-    purificadora = await Purificadora.findOneAndUpdate(
+    purificadora = await Purificadoras.findOneAndUpdate(
       { _id: req.params.id },
       purificadora,
       { new: true }
@@ -309,7 +280,7 @@ exports.crearRuta = async (req, res) => {
       puntosDeEntrega,
       diasAsignados,
     } = req.body;
-    console.table(req.body);
+    console.table(req.body.puntosDeEntrega);
     // console.table(req);
 
     // Verificar si ya existe una ruta con ese nombre
@@ -325,17 +296,19 @@ exports.crearRuta = async (req, res) => {
     const formattedPuntosDeEntrega = [];
 
     puntosDeEntrega.forEach((punto) => {
-      // Iterar sobre cada array interno de clienteIds
-      punto.clienteId.forEach((clienteIdArray) => {
-        // Iterar sobre cada clienteId dentro del array
-        clienteIdArray.forEach((clienteId) => {
+      if (Array.isArray(punto.clienteId)) {
+        punto.clienteId.forEach((clienteId) => {
           formattedPuntosDeEntrega.push({
-            // municipio: punto.municipio,
-            // colonia: punto.colonia,
-            clienteId: clienteId.toString(), // Convertir clienteId a cadena
+            colonia: punto.colonia,
+            clienteId: clienteId.toString(), // Convertir clienteId a ObjectId
           });
         });
-      });
+      } else {
+        formattedPuntosDeEntrega.push({
+          colonia: punto.colonia,
+          clienteId: clienteId.toString(), // Convertir clienteId a ObjectId
+        });
+      }
     });
     // Crear una nueva instancia del modelo Ruta
     const nuevaRuta = new Ruta({
@@ -347,9 +320,9 @@ exports.crearRuta = async (req, res) => {
       puntosDeEntrega: formattedPuntosDeEntrega,
       diasAsignados,
     });
-    console.table(nuevaRuta);
+    // console.table(nuevaRuta);
 
-    // Guardar la nueva ruta en la base de datos
+    // Guardar la nueva ruta en la base  de datos
     const rutaGuardada = await nuevaRuta.save();
     // console.log(rutaGuardada);
     res.status(201).json(rutaGuardada);
@@ -364,10 +337,10 @@ function obtieneDiaActual() {
     "domingo",
     "lunes",
     "martes",
-    "miércoles",
+    "miercoles",
     "jueves",
     "viernes",
-    "sábado",
+    "sabado",
   ];
   let fecha = new Date(); //Con la clase date obtendremos el dia
   let dia = diasSemana[fecha.getDay()];
@@ -395,10 +368,10 @@ exports.addSalida = async (req, res) => {
     } = req.body;
     // console.log(req.body);
 
-    const formattedPuntosDeEntrega = puntosDeEntrega.map((clienteId) => ({
-      clienteId: clienteId.toString(), // Convertir clienteId a cadena
+    const formattedPuntosDeEntrega = puntosDeEntrega.map((item) => ({
+      colonia: item.colonia,
+      clientes: item.clienteId.map((id) => ({ clienteId: id.toString() })),
     }));
-
     // Crear una nueva instancia del modelo Ruta
     const nuevaRuta = new Salida({
       nombreRuta,
@@ -420,13 +393,13 @@ exports.addSalida = async (req, res) => {
     res.status(500).json({ message: "Error al agregar la ruta", error });
   }
 };
-//
 exports.updateEstadoSalida = async (req, res) => {
   try {
     const { id } = req.params; // Obtener el ID de la ruta desde los parámetros de la URL
+
     const { estado } = req.body; // Obtener el nuevo estado desde el cuerpo de la solicitud
-    console.log(estado);
-    
+    console.log(id);
+
     const rutaActualizada = await Salida.findByIdAndUpdate(
       id,
       { estado },
@@ -434,7 +407,7 @@ exports.updateEstadoSalida = async (req, res) => {
     );
 
     if (!rutaActualizada) {
-      return res.status(404).json({ message: "Ruta no encontrada" });
+      return res.status(404).json({ message: "Salida no encontrada" });
     }
     // console.log(rutaActualizada);
     res.status(200).json(rutaActualizada);
@@ -445,47 +418,134 @@ exports.updateEstadoSalida = async (req, res) => {
       .json({ message: "Error al actualizar el estado de la ruta", error });
   }
 };
-
-//
 //
 exports.updateSalida = async (req, res) => {
   try {
-    const { id } = req.params; // Obtener el ID de la ruta desde los parámetros de la URL
-    const {
-      nombreRuta,
-      repartidorId,
-      vehiculoId,
-      puntosDeEntrega,
-      cantidadBotellas,
-    } = req.body;
+    const { id } = req.params;
 
-    const formattedPuntosDeEntrega = puntosDeEntrega.map((clienteId) => ({
-      clienteId: clienteId.toString(), // Convertir clienteId a cadena
-    }));
+    const nombreRuta = req.body.nombreRuta;
+    const repartidorId = req.body.repartidorId._id.toString();
+    const vehiculoId = req.body.vehiculoId._id.toString();
+    const cantidadBotellas = req.body.cantidadBotellas;
+    const estado = req.body.estado;
 
     // Buscar la ruta existente por ID
-    const rutaExistente = await Salida.findById(id);
+    const salidaExistente = await Salida.findById(id);
 
-    if (!rutaExistente) {
+    if (!salidaExistente) {
       return res.status(404).json({ message: "Ruta no encontrada" });
     }
 
-    // Actualizar los campos de la ruta existente con los nuevos datos
-    rutaExistente.nombreRuta = nombreRuta;
-    rutaExistente.repartidorId = repartidorId;
-    rutaExistente.vehiculoId = vehiculoId;
-    rutaExistente.puntosDeEntrega = formattedPuntosDeEntrega;
-    rutaExistente.cantidadBotellas = cantidadBotellas;
-    rutaExistente.diasSalida = obtieneDiaActual();
-    rutaExistente.fechaSalida = obtenerFechaYYYYMMDD();
+    const updatedSalida = await Salida.findOneAndUpdate(
+      { _id: id },
+      { nombreRuta, estado, repartidorId, vehiculoId, cantidadBotellas },
+      { new: true }
+    );
 
-    // Guardar los cambios en la base de datos
-    const rutaActualizada = await rutaExistente.save();
-
-    res.status(200).json(rutaActualizada);
+    res.status(200).json(updatedSalida);
   } catch (error) {
-    console.error("Error al actualizar la ruta:", error);
+    console.error("Error al actualizar la salida:", error);
     res.status(500).json({ message: "Error al actualizar la ruta", error });
+  }
+};
+
+exports.updateSalidaCantidad=async(req,res)=>{
+  try {
+    const { idSalida, clienteId, cantidad } = req.body;
+console.log(req.body);
+    // Aquí actualizarías la cantidad en la base de datos según idSalida y clienteId
+    const salida = await Salida.findById(idSalida);
+
+    if (!salida) {
+      return res.status(404).json({ msg: "Salida no encontrada" });
+    }
+
+    const puntoEntrega = salida.puntosDeEntrega.find(p => p.clienteId.toString() === clienteId);
+
+    if (!puntoEntrega) {
+      return res.status(404).json({ msg: "Cliente no encontrado en la salida" });
+    }
+
+    puntoEntrega.cantidadEntregada = cantidad;
+    await salida.save();
+
+    res.json({ msg: "Cantidad actualizada correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Ocurrió un error");
+  }
+
+}
+
+exports.RepartidoresyVehículosDisponibles = async (req, res) => {
+  try {
+    // Obtén la fecha y el día actual
+    const fechaActual = util.getFechaDDMMYYYY();
+    const diaActual = obtieneDiaActual();
+
+    console.log(`Fecha actual: ${fechaActual}`);
+    console.log(`Día actual: ${diaActual}`);
+
+    // Obtener todos los repartidores y vehículos disponibles para el día actual
+    const repartidores = await Repartidor.find().exec();
+
+    const vehiculos = await Vehiculo.find().exec();
+
+    console.log(`Repartidores encontrados: ${repartidores.length}`);
+    console.log(`Vehículos encontrados: ${vehiculos.length}`);
+
+    // Obtener las salidas registradas para el día actual
+    const salidasHoy = await Salida.find({ fechaSalida: fechaActual })
+      .populate("repartidorId")
+      .populate("vehiculoId")
+      .exec();
+
+    console.log(`Salidas registradas hoy: ${salidasHoy.length}`);
+
+    // Obtener rutas asignadas para el día actual
+    const rutas = await Ruta.find({ diasAsignados: diaActual })
+      .populate("repartidorId")
+      .populate("vehiculoId")
+      .exec();
+
+    console.log(`Rutas asignadas hoy: ${rutas.length}`);
+
+    // Crear conjuntos de IDs de repartidores y vehículos ocupados
+    const repartidoresOcupados = new Set([
+      ...salidasHoy.map(salida => salida.repartidorId._id.toString()),
+      ...rutas.map(ruta => ruta.repartidorId._id.toString())
+    ]);
+
+    const vehiculosOcupados = new Set([
+      ...salidasHoy.map(salida => salida.vehiculoId._id.toString()),
+      ...rutas.map(ruta => ruta.vehiculoId._id.toString())
+    ]);
+
+    console.log(`Repartidores ocupados: ${[...repartidoresOcupados].length}`);
+    console.log(`Vehículos ocupados: ${[...vehiculosOcupados].length}`);
+
+    // Filtrar los repartidores y vehículos que están disponibles para el día actual
+    const repartidoresDisponibles = repartidores.filter(repartidor =>
+      !repartidoresOcupados.has(repartidor._id.toString()) &&
+      repartidor.diasAsignados.includes(diaActual)
+    );
+
+    const vehiculosDisponibles = vehiculos.filter(vehiculo =>
+      !vehiculosOcupados.has(vehiculo._id.toString()) &&
+      vehiculo.diasAsignados.includes(diaActual)
+    );
+
+    console.log(`Repartidores disponibles después del filtro: ${repartidoresDisponibles.length}`);
+    console.log(`Vehículos disponibles después del filtro: ${vehiculosDisponibles.length}`);
+
+    // Responder con los repartidores y vehículos disponibles
+    res.json({
+      repartidores: repartidoresDisponibles,
+      vehiculos: vehiculosDisponibles,
+    });
+  } catch (error) {
+    console.error("Error en obtener repartidores y vehículos disponibles:", error);
+    res.status(500).send("Ocurrió un error");
   }
 };
 
@@ -521,12 +581,17 @@ exports.getObtenerRutasXdia = async (req, res) => {
         const salida = await Salida.findOne({
           nombreRuta: ruta.nombreRuta,
           fechaSalida: obtenerFechaYYYYMMDD(),
-        });
+        })
+          .populate("repartidorId")
+          .populate("vehiculoId")
+          .populate("puntosDeEntrega.clienteId")
+          .exec();
 
         if (salida) {
           // Si existe una salida, retornar los datos de la salida
           return {
-            ...ruta.toObject(),
+            ...salida.toObject(),
+            diasAsignados: salida.diasSalida,
             cantidadBotellas: salida.cantidadBotellas,
             estado: salida.estado,
             fechaSalida: salida.fechaSalida,
@@ -576,15 +641,12 @@ exports.addSalida = async (req, res) => {
       puntosDeEntrega,
       cantidadBotellas,
     } = req.body;
+
     const formattedPuntosDeEntrega = puntosDeEntrega.map((clienteId) => ({
       clienteId: clienteId.toString(), // Convertir clienteId a cadena
     }));
 
-
-
-    
-
-  const fecha=Utils.getFechaDDMMYYYY();
+    const fecha = util.getFechaDDMMYYYY();
     // Crear una nueva instancia del modelo Ruta
     const nuevaRuta = new Salida({
       nombreRuta,
@@ -606,6 +668,119 @@ exports.addSalida = async (req, res) => {
     res.status(500).json({ message: "Error al agregar la ruta", error });
   }
 };
+
+// Get rutas by repartidor ID
+exports.getRutasPorRepartidor = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    const rutas = await Ruta.find({ repartidorId: req.params.id });
+    // Extraer todos los días asignados y obtener los días únicos
+    const dias = [...new Set(rutas.flatMap((ruta) => ruta.diasAsignados))];
+
+    res.json(dias);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getRutasPorVehiculo = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    const rutas = await Ruta.find({ vehiculoId: req.params.id });
+    // Extraer todos los días asignados y obtener los días únicos
+    const dias = [...new Set(rutas.flatMap((ruta) => ruta.diasAsignados))];
+
+    res.json(dias);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getClienteDisponiblesByColonia = async (req, res) => {
+  try {
+    // Consultar todas las rutas
+    let rutas = await Ruta.find();
+
+    // Extraer los IDs de clientes que están en las rutas
+    const clientesEnRutas = new Set(
+      rutas.flatMap((ruta) =>
+        ruta.puntosDeEntrega.map((punto) => punto.clienteId.toString())
+      )
+    );
+
+    // Consultar todos los clientes en la colonia especificada
+    let clientesEnColonia = await Usuario.find({
+      colonia: req.body.colonia,
+      rol: { $ne: "ADMINPG" },
+    });
+
+    if (clientesEnColonia.length === 0) {
+      return res.status(404).json({
+        message: "No hay clientes disponibles para la colonia especificada.",
+      });
+    }
+
+    // Marcar cada cliente como seleccionado u ocupado
+    const clientesConEstado = clientesEnColonia.map((cliente) => {
+      return {
+        ...cliente.toObject(), // Convertir el cliente a objeto plano para agregar nuevos campos
+        seleccionado: clientesEnRutas.has(cliente._id.toString()),
+        ocupado: clientesEnRutas.has(cliente._id.toString()),
+      };
+    });
+
+    res.status(200).json(clientesConEstado);
+  } catch (error) {
+    console.error(error); // Agrega un log detallado para la depuración
+    if (!res.headersSent) {
+      // Verifica si los encabezados ya han sido enviados
+      res
+        .status(500)
+        .json({ message: "Error al obtener los clientes disponibles", error });
+    }
+  }
+};
+
+
+exports.getClienteDisponibles = async (req, res) => {
+  try {
+    // consultar todos las rutas
+    let rutas = await Ruta.find();
+
+    // const formattedPuntosDeEntrega = rutas.map((clienteId) => ({
+    //   clienteId: clienteId.toString(), // Convertir clienteId a cadena
+    // }));
+
+    // // tomar todos los clientes de las rutas
+    const clientesEnRutas = [
+      ...new Set(
+        rutas.flatMap((rutas) =>
+          rutas.puntosDeEntrega.map((punto) => punto.clienteId.toString())
+        )
+      ),
+    ];
+
+    // let cientes = await Cliente.find({ _id: { $ne: "ADMINPG" } });
+
+    let clientesDisponibles = await Usuario.find({
+      $and: [{ _id: { $nin: clientesEnRutas } }, { rol: { $ne: "ADMINPG" } }],
+    });
+
+    if (clientesDisponibles.length == 0) {
+      res.status(404).json({ msg: "No hay clientes disponibles" });
+    }
+
+    // filtrar los clientes que no están en rutas
+
+    console.log(clientesDisponibles);
+    // const clientesDisponibles = clientes.filter((cliente) => {});
+
+    res.status(200).json(clientesDisponibles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // exports.registroRuta = async (req, res) => {
 //   try {
 //     const {
@@ -655,3 +830,81 @@ exports.addSalida = async (req, res) => {
 //     res.status(500).json({ message: "Error al agregar la ruta", error });
 //   }
 // };
+// controllers/rutaController.js
+
+// controllers/rutaController.js
+
+exports.getDiasDisponibles = async (req, res) => {
+  try {
+    const rutaId = req.params.id;
+
+    // Buscar la ruta por ID
+    const ruta = await Ruta.findById(rutaId);
+    if (!ruta) {
+      return res.status(404).json({ message: "Ruta no encontrada" });
+    }
+
+    // Buscar repartidor y vehículo
+    const repartidor = await Repartidor.findById(ruta.repartidorId);
+    if (!repartidor) {
+      return res.status(404).json({ message: "Repartidor no encontrado" });
+    }
+
+    const vehiculo = await Vehiculo.findById(ruta.vehiculoId);
+    if (!vehiculo) {
+      return res.status(404).json({ message: "Vehículo no encontrado" });
+    }
+
+    // Obtener los días asignados a la ruta actual
+    const diasAsignadosRuta = new Set(ruta.diasAsignados);
+
+    // Buscar todas las rutas que no sean la actual
+    const otrasRutas = await Ruta.find({
+      _id: { $ne: rutaId },
+      $or: [
+        { repartidorId: ruta.repartidorId },
+        { vehiculoId: ruta.vehiculoId },
+      ],
+    });
+
+    // Obtener los días ocupados por el repartidor y el vehículo en otras rutas
+    const diasOcupados = new Set();
+
+    otrasRutas.forEach((otraRuta) => {
+      otraRuta.diasAsignados.forEach((dia) => {
+        if (
+          otraRuta.repartidorId.equals(ruta.repartidorId) ||
+          otraRuta.vehiculoId.equals(ruta.vehiculoId)
+        ) {
+          diasOcupados.add(dia);
+        }
+      });
+    });
+
+    // Determinar todos los días de la semana
+    const todosLosDias = [
+      "lunes",
+      "martes",
+      "miercoles",
+      "jueves",
+      "viernes",
+      "sabado",
+      "domingo",
+    ];
+
+    // Determinar los días disponibles que no están en los días asignados ni ocupados
+    const diasDisponibles = todosLosDias.filter(
+      (dia) => !diasAsignadosRuta.has(dia) && !diasOcupados.has(dia)
+    );
+
+    res.json({
+      diasAsignados: Array.from(diasAsignadosRuta),
+      diasOcupados: Array.from(diasOcupados),
+      diasDisponibles,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener los días disponibles", error });
+  }
+};
