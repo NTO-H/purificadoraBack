@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
 const RepartidoresSchema = mongoose.Schema({
+  idPurificadora: { type: mongoose.Schema.Types.ObjectId, ref: "Purificadoras" },
+
   nombre: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password1: { type: String, required: true },

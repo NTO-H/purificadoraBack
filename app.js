@@ -37,7 +37,8 @@ app.use("/direccion", require("./Routes/DireccionRoute"));
 app.use("/vehiculos", require("./Routes/VehiculoRoute"));
 // Ruta para acciones con rol de Reparitor
 app.use("/purificadoraRepartidores", require("./Routes/RepartidorRoute"));
-app.use("/salidas", require("./Routes/salidaRouter"));
+app.use("/ruta", require("./Routes/RutaRoute"));
+app.use("/salidas", require("./Routes/SalidaRouter"));
 app.use("/entrega", require("./Routes/entregaRouter"));
 
 module.exports = app;

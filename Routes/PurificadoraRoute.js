@@ -12,18 +12,6 @@ router.put("/salida/:id", PurificadoraController.updateSalida);
 router.put("/salidacantidad/", PurificadoraController.updateSalidaCantidad);
 // agregar nuevo cliente en la ruta con relacion muchos(clientes) a uno(ruta) por id de ruta
 router.post("/cliente/:id", PurificadoraController.cliente);
-// crear ruta
-router.post("/ruta/", PurificadoraController.crearRuta);
-// eliminar una ruta regitrada
-router.delete("/ruta/:id", PurificadoraController.eliminarRuta);
-// eliminar el cliente en la ruta con relacion muchos(clientes) a uno(ruta) por id de ruta y cliente
-router.delete("/clienteRuta/:id", PurificadoraController.deleteClientRute);
-//obtener los detalles de una ruta por id
-router.get("/ruta/:id", PurificadoraController.getDetalleRutaById);
-// obtener todas rutas regitradas
-router.get("/rutas", PurificadoraController.obteneRutas);
-// actualizar ruta por id
-router.put("/ruta/:id", PurificadoraController.actualizarRuta);
 // obtener salidas o rutas por dia actual ,aplica la logica de la conducional if-else,
 router.get("/salidaActual/", PurificadoraController.getObtenerRutasXdia);
 // obtener los clientes disponibles para ser agregados a una ruta
@@ -34,8 +22,8 @@ router.get("/diasDisponiblesByRuta/:id", PurificadoraController.getDiasDisponibl
 router.get("/repartidoresYvehiculosDisponibles/", PurificadoraController.RepartidoresyVehículosDisponibles);
 
 
-router.get("/byRepartidor/:id", PurificadoraController.getRutasPorRepartidor);
-router.get("/byVehiculo/:id", PurificadoraController.getRutasPorVehiculo);
+// router.get("/byRepartidor/:id", PurificadoraController.getRutasPorRepartidor);
+// router.get("/byVehiculo/:id", PurificadoraController.getRutasPorVehiculo);
 
 router.put("/salidaEstado/:id", PurificadoraController.updateEstadoSalida);
 

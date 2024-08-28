@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
 const UsuarioSchema = mongoose.Schema({
+  idPurificadora: { type: mongoose.Schema.Types.ObjectId, ref: "Purificadoras" },
+
   nombre: {type: String,required: true},
   email: {type: String,unique: true,required: false,},
   longitud: {type: String},

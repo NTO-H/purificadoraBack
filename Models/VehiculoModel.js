@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const VehiculoSchema = mongoose.Schema({
+  idPurificadora: { type: mongoose.Schema.Types.ObjectId, ref: "Purificadoras" },
   marca: { type: String, required: true, },
   modelo: {type: String,required: true,},
   diasAsignados: { type: Array, required: false },
