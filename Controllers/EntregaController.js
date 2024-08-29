@@ -2,8 +2,6 @@
 const { Entrega } = require("../Models/EntradaModel");
 
 exports.guardarEntrega = async (req, res) => {
-
-
     try {
         const nuevaEntrega = new Entrega(req.body);
         const entregaGuardada = await nuevaEntrega.save();
@@ -22,7 +20,7 @@ exports.guardarEntregaByIdPurificadora = async (req, res) => {
     try {
         const idPurificadora = req.params.idPurificadora;
         console.log(idPurificadora)
-        const resultado = await Repartidor.findOne({ idPurificadora: idPurificadora });
+        const resultado = await Entrega.findOne({ idPurificadora: idPurificadora });
 
         // const nuevaEntrega = new Entrega({ idPurificadora });
 

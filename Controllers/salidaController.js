@@ -255,3 +255,63 @@ exports.updateEstadoSalida = async (req, res) => {
   }
 };
 //
+
+
+//! npm install moment
+
+
+// const moment = require('moment');
+
+// exports.updateSalida = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { nombreRuta, repartidorId, vehiculoId, cantidadBotellas, estado } = req.body;
+
+//     // Buscar la ruta existente por ID
+//     const salidaExistente = await Salida.findById(id);
+
+//     if (!salidaExistente) {
+//       return res.status(404).json({ message: "Ruta no encontrada" });
+//     }
+
+//     // Preparar los campos a actualizar
+//     const updateFields = {
+//       nombreRuta,
+//       repartidorId: repartidorId._id.toString(),
+//       vehiculoId: vehiculoId._id.toString(),
+//       cantidadBotellas,
+//       estado,
+//     };
+
+//     // Obtener la fecha y hora actual
+//     const now = moment();
+
+//     // Actualizar la marca de tiempo según el estado, formateada
+//     switch (estado) {
+//       case 'enviada':
+//         updateFields.tiempoEnviada = now.format('YYYY-MM-DD HH:mm');
+//         break;
+//       case 'recibida':
+//         updateFields.tiempoRecibida = now.format('YYYY-MM-DD HH:mm');
+//         break;
+//       case 'finalizada':
+//         updateFields.tiempoFinalizada = now.format('YYYY-MM-DD HH:mm');
+//         break;
+//       case 'confirmada':
+//         updateFields.tiempoConfirmada = now.format('YYYY-MM-DD HH:mm');
+//         break;
+//     }
+
+//     // Actualizar la salida con los nuevos valores
+//     const updatedSalida = await Salida.findOneAndUpdate(
+//       { _id: id },
+//       updateFields,
+//       { new: true }
+//     );
+
+//     res.status(200).json(updatedSalida);
+//   } catch (error) {
+//     console.error("Error al actualizar la salida:", error);
+//     res.status(500).json({ message: "Error al actualizar la ruta", error });
+//   }
+// };

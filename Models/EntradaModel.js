@@ -8,7 +8,6 @@ const PuntoDeEntregaSchema = mongoose.Schema({
 // Define el esquema para la ruta
 const EntradaSchema = mongoose.Schema({
   idPurificadora: { type: mongoose.Schema.Types.ObjectId, ref: "Purificadoras" },
-
   nombreRuta: {type: String,required: true},
   repartidorId: {type: mongoose.Schema.Types.ObjectId,ref: "Repartidores",required: true,},
   vehiculoId: {type: mongoose.Schema.Types.ObjectId,ref: "Vehiculo",required: true,},
