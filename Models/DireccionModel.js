@@ -12,7 +12,6 @@ const ColoniaSchema = mongoose.Schema({
   },
 });
 
-
 const MunicipioSchema = mongoose.Schema({
   municipios: {
     type: [String],

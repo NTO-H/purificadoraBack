@@ -1,4 +1,4 @@
-const Purificadoras = require("../Models/PurificadoraModel");
+const {Purificadoras} = require("../Models/PurificadoraModel");
 const { Ruta } = require("../Models/RutaModel");
 const { Repartidor } = require("../Models/RepartidorModel");
 const { Vehiculo } = require("../Models/VehiculoModel");
@@ -9,14 +9,12 @@ require("../Routes/PurificadoraRoute");
 const Utils = require("../Shareds/Utils");
 const util = new Utils();
 
-
 exports.obtenePuricadoras = async (req, res) => {
   try {
     const purificadoras = await Purificadoras.find();
-if(purificadoras){
-  console.log("Consulta exitosa");
-}
-
+    if (purificadoras) {
+      console.log("Consulta exitosa");
+    }
 
     res.json(purificadoras);
   } catch (error) {
@@ -24,6 +22,41 @@ if(purificadoras){
   }
 };
 
+exports.puricadoraByid = async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+
+    // Assuming `id` is the identifier (likely `_id` in MongoDB)
+    let data = await Purificadoras.findOne({ _id: id });
+
+    if (!data) {
+      return res.status(404).send("Purificadora not found");
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("ocurrió un error");
+  }
+};
+exports.clientesByIdP = async (req, res) => {
+  try {
+    const idPurificadora = req.params.idPurificadora;
+
+    // Use find instead of findOne to get an array of documents
+    let data = await Usuario.find({ idPurificadora: idPurificadora });
+
+    if (!data || data.length === 0) {
+      return res.status(404).send("No clients found for the given Purificadora");
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("ocurrió un error");
+  }
+};
 
 
 exports.eliminarPuricadora = async (req, res) => {
@@ -94,9 +127,6 @@ exports.cliente = async (req, res) => {
   }
 };
 
-
-
-
 exports.updatePurificadora = async (req, res) => {
   try {
     const {
@@ -140,7 +170,6 @@ exports.updatePurificadora = async (req, res) => {
   }
 };
 
-
 function obtieneDiaActual() {
   let diasSemana = [
     "domingo",
@@ -165,69 +194,6 @@ function obtenerFechaYYYYMMDD() {
   return `${dia}-${mes}-${año}`;
 }
 
-// !Importate :Hacer modificaciones de datos
-exports.addSalida = async (req, res) => {
-  try {
-    const {
-      nombreRuta,
-      repartidorId,
-      vehiculoId,
-      puntosDeEntrega,
-      cantidadBotellas,
-    } = req.body;
-    // console.log(req.body);
-
-    const formattedPuntosDeEntrega = puntosDeEntrega.map((item) => ({
-      colonia: item.colonia,
-      clientes: item.clienteId.map((id) => ({ clienteId: id.toString() })),
-    }));
-    // Crear una nueva instancia del modelo Ruta
-    const nuevaRuta = new Salida({
-      nombreRuta,
-      repartidorId,
-      vehiculoId,
-      estado: "enviado",
-      puntosDeEntrega: formattedPuntosDeEntrega,
-      cantidadBotellas: cantidadBotellas,
-      diasSalida: obtieneDiaActual(),
-      fechaSalida: obtenerFechaYYYYMMDD(),
-    });
-
-    // Guardar la nueva ruta en la base de datos
-    const rutaGuardada = await nuevaRuta.save();
-    // console.log(rutaGuardada);
-    res.status(201).json(rutaGuardada);
-  } catch (error) {
-    console.error("Error al agregar la ruta:", error);
-    res.status(500).json({ message: "Error al agregar la ruta", error });
-  }
-};
-exports.updateEstadoSalida = async (req, res) => {
-  try {
-    const { id } = req.params; // Obtener el ID de la ruta desde los parámetros de la URL
-
-    const { estado } = req.body; // Obtener el nuevo estado desde el cuerpo de la solicitud
-    console.log(id);
-
-    const rutaActualizada = await Salida.findByIdAndUpdate(
-      id,
-      { estado },
-      { new: true } // Devuelve el documento modificado
-    );
-
-    if (!rutaActualizada) {
-      return res.status(404).json({ message: "Salida no encontrada" });
-    }
-    // console.log(rutaActualizada);
-    res.status(200).json(rutaActualizada);
-  } catch (error) {
-    console.error("Error al actualizar el estado de la ruta:", error);
-    res
-      .status(500)
-      .json({ message: "Error al actualizar el estado de la ruta", error });
-  }
-};
-//
 exports.updateSalida = async (req, res) => {
   try {
     const { id } = req.params;
@@ -258,10 +224,10 @@ exports.updateSalida = async (req, res) => {
   }
 };
 
-exports.updateSalidaCantidad=async(req,res)=>{
+exports.updateSalidaCantidad = async (req, res) => {
   try {
     const { idSalida, clienteId, cantidad } = req.body;
-console.log(req.body);
+    console.log(req.body);
     // Aquí actualizarías la cantidad en la base de datos según idSalida y clienteId
     const salida = await Salida.findById(idSalida);
 
@@ -269,10 +235,14 @@ console.log(req.body);
       return res.status(404).json({ msg: "Salida no encontrada" });
     }
 
-    const puntoEntrega = salida.puntosDeEntrega.find(p => p.clienteId.toString() === clienteId);
+    const puntoEntrega = salida.puntosDeEntrega.find(
+      (p) => p.clienteId.toString() === clienteId
+    );
 
     if (!puntoEntrega) {
-      return res.status(404).json({ msg: "Cliente no encontrado en la salida" });
+      return res
+        .status(404)
+        .json({ msg: "Cliente no encontrado en la salida" });
     }
 
     puntoEntrega.cantidadEntregada = cantidad;
@@ -283,8 +253,7 @@ console.log(req.body);
     console.error(error);
     res.status(500).send("Ocurrió un error");
   }
-
-}
+};
 
 exports.RepartidoresyVehículosDisponibles = async (req, res) => {
   try {
@@ -321,31 +290,37 @@ exports.RepartidoresyVehículosDisponibles = async (req, res) => {
 
     // Crear conjuntos de IDs de repartidores y vehículos ocupados
     const repartidoresOcupados = new Set([
-      ...salidasHoy.map(salida => salida.repartidorId._id.toString()),
-      ...rutas.map(ruta => ruta.repartidorId._id.toString())
+      ...salidasHoy.map((salida) => salida.repartidorId._id.toString()),
+      ...rutas.map((ruta) => ruta.repartidorId._id.toString()),
     ]);
 
     const vehiculosOcupados = new Set([
-      ...salidasHoy.map(salida => salida.vehiculoId._id.toString()),
-      ...rutas.map(ruta => ruta.vehiculoId._id.toString())
+      ...salidasHoy.map((salida) => salida.vehiculoId._id.toString()),
+      ...rutas.map((ruta) => ruta.vehiculoId._id.toString()),
     ]);
 
     console.log(`Repartidores ocupados: ${[...repartidoresOcupados].length}`);
     console.log(`Vehículos ocupados: ${[...vehiculosOcupados].length}`);
 
     // Filtrar los repartidores y vehículos que están disponibles para el día actual
-    const repartidoresDisponibles = repartidores.filter(repartidor =>
-      !repartidoresOcupados.has(repartidor._id.toString()) &&
-      repartidor.diasAsignados.includes(diaActual)
+    const repartidoresDisponibles = repartidores.filter(
+      (repartidor) =>
+        !repartidoresOcupados.has(repartidor._id.toString()) &&
+        repartidor.diasAsignados.includes(diaActual)
     );
 
-    const vehiculosDisponibles = vehiculos.filter(vehiculo =>
-      !vehiculosOcupados.has(vehiculo._id.toString()) &&
-      vehiculo.diasAsignados.includes(diaActual)
+    const vehiculosDisponibles = vehiculos.filter(
+      (vehiculo) =>
+        !vehiculosOcupados.has(vehiculo._id.toString()) &&
+        vehiculo.diasAsignados.includes(diaActual)
     );
 
-    console.log(`Repartidores disponibles después del filtro: ${repartidoresDisponibles.length}`);
-    console.log(`Vehículos disponibles después del filtro: ${vehiculosDisponibles.length}`);
+    console.log(
+      `Repartidores disponibles después del filtro: ${repartidoresDisponibles.length}`
+    );
+    console.log(
+      `Vehículos disponibles después del filtro: ${vehiculosDisponibles.length}`
+    );
 
     // Responder con los repartidores y vehículos disponibles
     res.json({
@@ -353,7 +328,10 @@ exports.RepartidoresyVehículosDisponibles = async (req, res) => {
       vehiculos: vehiculosDisponibles,
     });
   } catch (error) {
-    console.error("Error en obtener repartidores y vehículos disponibles:", error);
+    console.error(
+      "Error en obtener repartidores y vehículos disponibles:",
+      error
+    );
     res.status(500).send("Ocurrió un error");
   }
 };
@@ -423,23 +401,6 @@ exports.getObtenerRutasXdia = async (req, res) => {
   }
 };
 
-exports.getDetalleRutaById = async (req, res) => {
-  try {
-    const ruta = await Ruta.findById(req.params.id)
-      .populate("repartidorId")
-      .populate("vehiculoId")
-      .populate("puntosDeEntrega.clienteId")
-      .exec();
-    if (!ruta) {
-      return res.status(404).json({ msg: "ruta Not Found" });
-    }
-    res.json(ruta);
-  } catch (error) {
-    console.log(error);
-    res.status(404).send("ucurrio un error");
-  }
-};
-
 // !
 exports.addSalida = async (req, res) => {
   try {
@@ -477,7 +438,6 @@ exports.addSalida = async (req, res) => {
     res.status(500).json({ message: "Error al agregar la ruta", error });
   }
 };
-
 
 exports.getClienteDisponiblesByColonia = async (req, res) => {
   try {
@@ -523,7 +483,6 @@ exports.getClienteDisponiblesByColonia = async (req, res) => {
     }
   }
 };
-
 
 exports.getClienteDisponibles = async (req, res) => {
   try {

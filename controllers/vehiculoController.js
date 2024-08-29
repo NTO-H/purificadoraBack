@@ -34,6 +34,7 @@ exports.crearVehiculo = async (req, res) => {
   }
 };
 
+
 exports.getVehiculos = async (req, res) => {
   try {
     
@@ -43,6 +44,24 @@ exports.getVehiculos = async (req, res) => {
     console.log("error de consulta");
   }
 };
+exports.vehiculosByIdP = async (req, res) => {
+  try {
+    const idPurificadora = req.params.idPurificadora;
+
+    // Use find instead of findOne to get an array of documents
+    let data = await Vehiculo.find({ idPurificadora: idPurificadora });
+
+    if (!data || data.length === 0) {
+      return res.status(404).send("No Vehiculos found for the given Purificadora");
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("ocurrió un error");
+  }
+};
+
 
 exports.getVehiculosDisponibles = async (req, res) => {
   try {

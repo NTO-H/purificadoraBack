@@ -5,14 +5,13 @@ require("../Routes/UsuarioRoute");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-
 exports.perfilUsuario = async (req, res) => {
   try {
     const { correo } = req.params.correo;
     // Buscar el usuario por correo en la base de datos
     const usuario = await Usuario.findOne({ correo })
-    .populate("municipioId.municipio")
-    .populate("coloniaId.colonia");
+      .populate("municipioId.municipio")
+      .populate("coloniaId.colonia");
     // Verificar si el usuario existe
     if (!usuario) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
@@ -63,9 +62,8 @@ exports.verifyTokenAndRole = (role) => (req, res, next) => {
 };
 
 exports.getColoniasPorClientes = async (req, res) => {
-  try {   
-     const clientes = await Usuario.find({ rol: { $ne: "ADMINPG" } });
-
+  try {
+    const clientes = await Usuario.find({ rol: { $ne: "ADMINPG" } });
 
     const resultado = {};
 
@@ -85,7 +83,9 @@ exports.getColoniasPorClientes = async (req, res) => {
 
     res.json(resultado);
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener clientes agrupados", error });
+    res
+      .status(500)
+      .json({ message: "Error al obtener clientes agrupados", error });
   }
 };
 // Ruta protegida para administradores
@@ -134,8 +134,7 @@ exports.crearUsuario = async (req, res) => {
     let municipio = req.body.municipio; // Agregar obtenerUsuarioById
     let colonia = req.body.colonia; // Agregar obtenerUsuarioById
 
-console.table(req.body);
-
+    console.table(req.body);
 
     const record = await Usuario.findOne({ email: email });
     if (record) {

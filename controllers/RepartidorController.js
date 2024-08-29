@@ -158,6 +158,23 @@ exports.actualizaDatos = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
+exports.repartidoresByIdP = async (req, res) => {
+  try {
+    const idPurificadora = req.params.idPurificadora;
+
+    // Use find instead of findOne to get an array of documents
+    let data = await Repartidor.find({ idPurificadora: idPurificadora });
+
+    if (!data || data.length === 0) {
+      return res.status(404).send("No Repartidor found for the given Purificadora");
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("ocurrió un error");
+  }
+};
 
 exports.obtenerRepartidorById = async (req, res) => {
   try {
@@ -165,6 +182,19 @@ exports.obtenerRepartidorById = async (req, res) => {
     if (!respuesta) {
       return res.status(404).json({ msg: "usuario Not Found" });
     }
+    res.json(respuesta);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("ucurrio un error");
+  }
+};
+
+exports.obtenerRepartidorById = async (req, res) => {
+  try {
+    const respuesta = await Repartidor.findById(req.params.id);
+    if (!respuesta) {
+      return res.status(404).json({ msg: "usuario Not Found" });
+    } 
     res.json(respuesta);
   } catch (error) {
     console.log(error);

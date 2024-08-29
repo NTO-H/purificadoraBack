@@ -7,7 +7,8 @@ router.get("/municipio/", DireccionController.getMunicipios);
 router.get("/colonias/", DireccionController.getColonias);
 
 router.post("/coloniasByMunicipio/", DireccionController.getColoniasByMunicipio);
-router.post("/getColoniasByMunicipioByClientes/", DireccionController.getColoniasByMunicipioByClientes);
+router.post("/getColoniasByMunicipioByClientes/", DireccionController.getColoniasByPurificadoraByClientes);
+// router.post("/getColoniasByMunicipioByClientes/", DireccionController.getColoniasByMunicipioByClientes);
 
 router.get("/clientesByColonia/:id", DireccionController.getClientesByColonia);
 router.get(

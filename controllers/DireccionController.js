@@ -40,19 +40,22 @@ exports.getColoniasByMunicipio = async (req, res) => {
 };
 
 
-exports.getColoniasByMunicipioByClientes = async (req, res) => {
+exports.getColoniasByPurificadoraByClientes = async (req, res) => {
   try {
-    const municipio = req.body.municipio;
-    console.log("Buscando colonias por municipio: ", municipio);
+    const idPurificadora = req.body.idPurificadora;
+    console.log("Buscando colonias por purificadora: ", idPurificadora);
 
-    // Obtén todas las colonias distintas para el municipio especificado
-    const colonias = await Usuario.distinct('colonia', { municipio });
+    // Obtén todas las colonias de los usuarios registrados para la purificadora especificada
+    const usuarios = await Usuario.find({ idPurificadora }).select('colonia');
+    
+    // Extrae las colonias únicas
+    const colonias = [...new Set(usuarios.map(usuario => usuario.colonia))];
 
     // Filtra las colonias excluyendo aquellas donde todos los usuarios ya están asignados a rutas
-    const coloniasDisponibles = [];
+    let coloniasDisponibles = [];
 
     for (const colonia of colonias) {
-      const usuariosEnColonia = await Usuario.find({ municipio, colonia }).select('_id');
+      const usuariosEnColonia = await Usuario.find({ idPurificadora, colonia }).select('_id');
 
       const usuariosIds = usuariosEnColonia.map(usuario => usuario._id);
 
@@ -70,11 +73,13 @@ exports.getColoniasByMunicipioByClientes = async (req, res) => {
     }
 
     console.log("Colonias disponibles: ", coloniasDisponibles);
-    res.json({ colonias: coloniasDisponibles });
+    res.json(coloniasDisponibles); // Enviar el array directamente
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener las colonias', error });
   }
 };
+
+
 // exports.getColoniasByMunicipioByClientes = async (req, res) => {
 //   // console.log("llego");
 //   try {
