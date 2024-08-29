@@ -12,8 +12,6 @@ const corsOptions = {
   origin: [
     "https://purificadora.vercel.app",
     "http://localhost:4200",
-    "https://fd1v4w8b-4200.usw3.devtunnels.ms/",
-    // "http://192.168.0.114:4200",
   ],
   credentials: true,
 };
@@ -22,6 +20,11 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 // Rutas padres
+
+// Ruta raíz que muestra "Hola Mundo"
+app.get("/", (req, res) => {
+  res.send("Hola Mundo 🎉");
+});
 
 app.use("/ruta", require("./Routes/RutaRoute"));
 // Ruta para inicio de sesión

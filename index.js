@@ -1,4 +1,4 @@
-const app = require("./App");
+const app = require("./app");
 const process = require("process");
 // Puerto de escucha
 const PORT = process.env.PORT || 4000;
