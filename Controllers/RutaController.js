@@ -249,7 +249,7 @@ exports.obteneRutas = async (req, res) => {
     console.log("error de consulta");
   }
 };
-exports.obteneRutas = async (req, res) => {
+exports.obteneRutasByIdPurificadora = async (req, res) => {
   try {
     const idPurificadora = req.params.idPurificadora;
 

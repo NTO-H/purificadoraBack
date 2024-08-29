@@ -19,18 +19,18 @@ exports.guardarEntrega = async (req, res) => {
 exports.guardarEntregaByIdPurificadora = async (req, res) => {
     try {
         const idPurificadora = req.params.idPurificadora;
-        console.log(idPurificadora)
-        const resultado = await Entrega.findOne({ idPurificadora: idPurificadora });
+        console.log(idPurificadora);
 
-        // const nuevaEntrega = new Entrega({ idPurificadora });
+        // Buscar todas las entregas correspondientes al idPurificadora
+        const resultado = await Entrega.find({ idPurificadora: idPurificadora });
 
+        // Devolver el resultado como un arreglo
         res.status(200).json(resultado);
 
     } catch (error) {
         res.status(500).json({
-            mensaje: "Error al obtener las entrega",
+            mensaje: "Error al obtener las entregas",
             error: error.message
         });
     }
 };
-

@@ -10,7 +10,7 @@ const utils = new Utils();
 
 exports.crearRepartidores = async (req, res) => {
   try {
-    let { password1, nombre, telefono, numCasa } = req.body;
+    let {idPurificadora, password1, nombre, telefono, numCasa } = req.body;
     let email = req.body.email;
     let diasAsignados = req.body.diasAsignados;
 
@@ -23,6 +23,7 @@ exports.crearRepartidores = async (req, res) => {
       return res.status(400).send({ message: "El email ya está registrado" });
     }
     const repartidor = new Repartidor({
+      idPurificadora: idPurificadora,
       nombre: nombre,
       email: email,
       telefono: telefono,

@@ -125,6 +125,7 @@ exports.EstadoUsuario = async (req, res) => {
 
 exports.crearUsuario = async (req, res) => {
   try {
+    const idPurificadora=req.params.idPurificadora;
     let nombre = req.body.nombre;
     let telefono = req.body.telefono;
     let email = req.body.email;
@@ -142,6 +143,7 @@ exports.crearUsuario = async (req, res) => {
     }
 
     const usuario = new Usuario({
+      idPurificadora: idPurificadora,
       nombre: nombre,
       email: email,
       telefono: telefono,
