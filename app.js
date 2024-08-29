@@ -10,7 +10,7 @@ conectarDB();
 const corsOptions = {
   //Lista de URLs clientes permitidas
   origin: [
-    "https://purificadora.vercel.app",
+    "https://purificadoras.vercel.app/",
     // "http://localhost:4200", //!prueba local
   ],
   credentials: true,
