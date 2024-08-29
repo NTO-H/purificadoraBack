@@ -9,10 +9,6 @@ exports.getPurificadoras = async (req, res) => {
   }
 };
 
-
-
-
-
 exports.registroPurificadora = async (req, res) => {
   try {
     let { nombre } = req.body;
