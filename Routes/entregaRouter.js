@@ -1,7 +1,7 @@
     const express = require("express");
     const router = express.Router();
     // const { guardarEntrega } = require("../controllers/entregaController");
-    const entregaController = require("../Controllers/entregaController");
+    const entregaController = require("../Controllers/EntregaController");
 
     // Ruta para guardar una nueva entrega
     router.post("/", entregaController.guardarEntrega);
