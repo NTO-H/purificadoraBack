@@ -5,7 +5,7 @@
 
     // Ruta para guardar una nueva entrega
     router.post("/", entregaController.guardarEntrega);
-    router.post("/:idPurificadora", entregaController.guardarEntregaByIdPurificadora);
+    router.get("/:idPurificadora", entregaController.guardarEntregaByIdPurificadora);
     // return this.http.get(`${environment.api}/entrega/entregas`+idPurificadora);
 
     module.exports = router;

@@ -22,15 +22,15 @@ exports.guardarEntregaByIdPurificadora = async (req, res) => {
     try {
         const idPurificadora = req.params.idPurificadora;
         console.log(idPurificadora)
-        const nuevaEntrega = new Entrega({ idPurificadora });
-        const entregaGuardada = await nuevaEntrega.save();
-        res.status(201).json({
-            mensaje: "Entrega guardada exitosamente",
-            entrega: entregaGuardada
-        });
+        const resultado = await Repartidor.findOne({ idPurificadora: idPurificadora });
+
+        // const nuevaEntrega = new Entrega({ idPurificadora });
+
+        res.status(200).json(resultado);
+
     } catch (error) {
         res.status(500).json({
-            mensaje: "Error al guardar la entrega",
+            mensaje: "Error al obtener las entrega",
             error: error.message
         });
     }
