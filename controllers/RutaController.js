@@ -6,6 +6,7 @@ const { Salida } = require("../Models/SalidaModel");
 const { Usuario } = require("../Models/UsuarioModel");
 const Utils = require("../Shareds/Utils");
 const util = new Utils();
+require("../Routes/RutaRoute");
 
 exports.crearRuta = async (req, res) => {
   try {
