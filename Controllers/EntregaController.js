@@ -18,4 +18,21 @@ exports.guardarEntrega = async (req, res) => {
         });
     }
 };
+exports.guardarEntregaByIdPurificadora = async (req, res) => {
+    try {
+        const idPurificadora = req.params.idPurificadora;
+        console.log(idPurificadora)
+        const nuevaEntrega = new Entrega({ idPurificadora });
+        const entregaGuardada = await nuevaEntrega.save();
+        res.status(201).json({
+            mensaje: "Entrega guardada exitosamente",
+            entrega: entregaGuardada
+        });
+    } catch (error) {
+        res.status(500).json({
+            mensaje: "Error al guardar la entrega",
+            error: error.message
+        });
+    }
+};
 
