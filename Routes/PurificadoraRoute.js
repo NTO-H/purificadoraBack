@@ -1,7 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
-const PurificadoraController = require("../Controllers/PurificadoraController");
+const PurificadoraController = require("../Controllers/purificadoraController");
 
 // // crear salida
 

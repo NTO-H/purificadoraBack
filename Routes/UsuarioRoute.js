@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jw = require("jsonwebtoken");
-const UsuarioController = require("../Controllers/UsuarioController");
+const UsuarioController = require("../Controllers/usuarioController");
 
 router.get("/admin", UsuarioController.adminRoute);
 // agrega cliente

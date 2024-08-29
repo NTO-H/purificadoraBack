@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const VehiculoController = require("../Controllers/VehiculoController");
+const VehiculoController = require("../Controllers/vehiculoController");
 
 router.put("/actualiza/:id", VehiculoController.actualizaDatos);
 router.delete("/deleteVehiculo/:id", VehiculoController.eliminarVehiculo);
