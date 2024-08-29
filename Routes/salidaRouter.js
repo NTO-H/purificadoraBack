@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const salidaController = require("../Controllers/salidaController");
 
-// Ruta para guardar una nueva entrega
+// actualiza el estado de la salida actual
+router.put("/salida/:id", salidaController.updateSalida);
+// actualiza el estado de la salida actual
+router.put("/salidacantidad/", salidaController.updateSalidaCantidad);
 // router.put('/confirmar', salidaController.confirmarSalida);
 router.put('/confirmar', salidaController.confirmarSalida);
 // obtener salidas o rutas por dia actual ,aplica la logica de la conducional if-else,

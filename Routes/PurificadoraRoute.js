@@ -4,14 +4,7 @@ const router = express.Router();
 const PurificadoraController = require("../Controllers/PurificadoraController");
 
 // // crear salida
-// router.post("/salida/", PurificadoraController.addSalida);
-// actualiza el estado de la salida actual
-router.put("/salida/:id", PurificadoraController.updateSalida);
-// agregar nuevo cliente en la ruta con relacion muchos(clientes) a uno(ruta) por id de ruta
-// actualiza el estado de la salida actual
-router.put("/salidacantidad/", PurificadoraController.updateSalidaCantidad);
-// agregar nuevo cliente en la ruta con relacion muchos(clientes) a uno(ruta) por id de ruta
-router.post("/cliente/:id", PurificadoraController.cliente);
+
 // // obtener salidas o rutas por dia actual ,aplica la logica de la conducional if-else,
 // router.get("/salidaActual/", PurificadoraController.getObtenerRutasXdia);
 // obtener los clientes disponibles para ser agregados a una ruta

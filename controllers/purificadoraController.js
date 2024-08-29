@@ -194,67 +194,6 @@ function obtenerFechaYYYYMMDD() {
   return `${dia}-${mes}-${año}`;
 }
 
-exports.updateSalida = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const nombreRuta = req.body.nombreRuta;
-    const repartidorId = req.body.repartidorId._id.toString();
-    const vehiculoId = req.body.vehiculoId._id.toString();
-    const cantidadBotellas = req.body.cantidadBotellas;
-    const estado = req.body.estado;
-
-    // Buscar la ruta existente por ID
-    const salidaExistente = await Salida.findById(id);
-
-    if (!salidaExistente) {
-      return res.status(404).json({ message: "Ruta no encontrada" });
-    }
-
-    const updatedSalida = await Salida.findOneAndUpdate(
-      { _id: id },
-      { nombreRuta, estado, repartidorId, vehiculoId, cantidadBotellas },
-      { new: true }
-    );
-
-    res.status(200).json(updatedSalida);
-  } catch (error) {
-    console.error("Error al actualizar la salida:", error);
-    res.status(500).json({ message: "Error al actualizar la ruta", error });
-  }
-};
-
-exports.updateSalidaCantidad = async (req, res) => {
-  try {
-    const { idSalida, clienteId, cantidad } = req.body;
-    console.log(req.body);
-    // Aquí actualizarías la cantidad en la base de datos según idSalida y clienteId
-    const salida = await Salida.findById(idSalida);
-
-    if (!salida) {
-      return res.status(404).json({ msg: "Salida no encontrada" });
-    }
-
-    const puntoEntrega = salida.puntosDeEntrega.find(
-      (p) => p.clienteId.toString() === clienteId
-    );
-
-    if (!puntoEntrega) {
-      return res
-        .status(404)
-        .json({ msg: "Cliente no encontrado en la salida" });
-    }
-
-    puntoEntrega.cantidadEntregada = cantidad;
-    await salida.save();
-
-    res.json({ msg: "Cantidad actualizada correctamente" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Ocurrió un error");
-  }
-};
-
 exports.RepartidoresyVehículosDisponibles = async (req, res) => {
   try {
     // Obtén la fecha y el día actual
