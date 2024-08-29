@@ -1,11 +1,9 @@
-const Purificadoras = require("../Models/PurificadoraModel");
 const { Ruta } = require("../Models/RutaModel");
 const { Repartidor } = require("../Models/RepartidorModel");
 const { Vehiculo } = require("../Models/VehiculoModel");
 
 const { Salida } = require("../Models/SalidaModel");
 const { Usuario } = require("../Models/UsuarioModel");
-// require("../Routes/PurificadoraRoute");
 const Utils = require("../Shareds/Utils");
 const util = new Utils();
 

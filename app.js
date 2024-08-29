@@ -11,7 +11,7 @@ const corsOptions = {
   //Lista de URLs clientes permitidas
   origin: [
     "https://purificadora.vercel.app",
-    "http://localhost:4200",
+    // "http://localhost:4200", //!prueba local
   ],
   credentials: true,
 };
