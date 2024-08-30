@@ -22,7 +22,9 @@ exports.guardarEntregaByIdPurificadora = async (req, res) => {
         console.log(idPurificadora);
 
         // Buscar todas las entregas correspondientes al idPurificadora
-        const resultado = await Entrega.find({ idPurificadora: idPurificadora });
+        const resultado = await Entrega.find({ idPurificadora: idPurificadora }).populate("repartidorId")
+            .populate("vehiculoId")
+            .populate("puntosDeEntrega.clienteId");;
 
         // Devolver el resultado como un arreglo
         res.status(200).json(resultado);
