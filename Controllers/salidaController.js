@@ -106,31 +106,29 @@ exports.confirmarSalida = async (req, res) => {
 
 exports.getObtenerRutasXdiaByIdPurificadora = async (req, res) => {
   try {
-    let diasSemana = [
+    const diasSemana = [
       "domingo",
       "lunes",
       "martes",
-      "miercoles",
+      "miércoles",
       "jueves",
       "viernes",
-      "sabado",
+      "sábado",
     ];
-    let fecha = new Date(); //Con la clase date obtendremos el dia
-    let diaSemana = diasSemana[fecha.getDay()];
+    const fecha = new Date(); // Obtener el día de la semana
+    const diaSemana = diasSemana[fecha.getDay()];
 
     const idPurificadora = req.params.idPurificadora;
-
-
+    console.log(idPurificadora)
     // Obtener todas las rutas asignadas al día específico
     const rutas = await Ruta.find({
       diasAsignados: diaSemana,
-      purificadoraId: idPurificadora // Usar purificadoraId si es el nombre del campo en el esquema
+      purificadoraId: idPurificadora, // Usar purificadoraId si es el nombre del campo en el esquema
     })
-      // const rutas = await Ruta.find({ diasAsignados: diaSemana })
       .populate("repartidorId")
       .populate("vehiculoId")
-      .populate("puntosDeEntrega.clienteId")
-      .exec();
+      .populate("puntosDeEntrega.clienteId");
+
     if (!rutas || rutas.length === 0) {
       return res
         .status(404)
@@ -143,12 +141,11 @@ exports.getObtenerRutasXdiaByIdPurificadora = async (req, res) => {
         const salida = await Salida.findOne({
           nombreRuta: ruta.nombreRuta,
           fechaSalida: obtenerFechaYYYYMMDD(),
-          purificadoraId: idPurificadora // Añade el filtro por purificadoraId
+          purificadoraId: idPurificadora, // Añadir el filtro por purificadoraId
         })
           .populate("repartidorId")
           .populate("vehiculoId")
-          .populate("puntosDeEntrega.clienteId")
-          .exec();
+          .populate("puntosDeEntrega.clienteId");
 
         if (salida) {
           // Si existe una salida, retornar los datos de la salida
@@ -172,10 +169,11 @@ exports.getObtenerRutasXdiaByIdPurificadora = async (req, res) => {
 
     res.json(rutasConSalidas);
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Ocurrió un error");
+    console.error("Error al obtener rutas:", error);
+    res.status(500).json({ msg: "Ocurrió un error al obtener rutas" });
   }
 };
+
 
 function obtieneDiaActual() {
   let diasSemana = [
@@ -195,8 +193,6 @@ function obtieneDiaActual() {
 exports.addSalida = async (req, res) => {
   try {
     const {
-      idPurificadora,
-
       nombreRuta,
       repartidorId,
       vehiculoId,
@@ -220,7 +216,6 @@ exports.addSalida = async (req, res) => {
     });
     // Crear una nueva instancia del modelo Ruta
     const nuevaRuta = new Salida({
-      idPurificadora,
       nombreRuta,
       repartidorId,
       vehiculoId,
