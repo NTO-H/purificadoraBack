@@ -110,10 +110,10 @@ exports.getObtenerRutasXdiaByIdPurificadora = async (req, res) => {
       "domingo",
       "lunes",
       "martes",
-      "miércoles",
+      "miercoles",
       "jueves",
       "viernes",
-      "sábado",
+      "sabado",
     ];
     const fecha = new Date(); // Obtener el día de la semana
     const diaSemana = diasSemana[fecha.getDay()];
@@ -123,7 +123,7 @@ exports.getObtenerRutasXdiaByIdPurificadora = async (req, res) => {
     // Obtener todas las rutas asignadas al día específico
     const rutas = await Ruta.find({
       diasAsignados: diaSemana,
-      purificadoraId: idPurificadora, // Usar purificadoraId si es el nombre del campo en el esquema
+      idPurificadora: idPurificadora, // Usar purificadoraId si es el nombre del campo en el esquema
     })
       .populate("repartidorId")
       .populate("vehiculoId")
@@ -141,7 +141,7 @@ exports.getObtenerRutasXdiaByIdPurificadora = async (req, res) => {
         const salida = await Salida.findOne({
           nombreRuta: ruta.nombreRuta,
           fechaSalida: obtenerFechaYYYYMMDD(),
-          purificadoraId: idPurificadora, // Añadir el filtro por purificadoraId
+          idPurificadora: idPurificadora, // Añadir el filtro por purificadoraId
         })
           .populate("repartidorId")
           .populate("vehiculoId")
