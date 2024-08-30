@@ -6,7 +6,7 @@ const RutaController=require("../Controllers/RutaController");
 
 router.get("/:id", RutaController.getDetalleRutaById);
 
-router.get("/:idPurificadora", RutaController.byIdPurificadora);
+router.get("/idPurificadora/:idPurificadora", RutaController.byIdPurificadora);
 router.post("/", RutaController.crearRuta);
 // eliminar una ruta regitrada
 //obtener los detalles de una ruta por id
