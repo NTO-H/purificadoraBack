@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 const RutaController=require("../Controllers/RutaController");
 // crear ruta
+
+
 router.get("/:idPurificadora", RutaController.byIdPurificadora);
 router.post("/", RutaController.crearRuta);
 // eliminar una ruta regitrada
