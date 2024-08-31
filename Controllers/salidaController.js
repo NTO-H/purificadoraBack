@@ -30,6 +30,7 @@ exports.updateSalida = async (req, res) => {
       return res.status(404).json({ message: "Ruta no encontrada" });
     }
 
+    
     const updatedSalida = await Salida.findOneAndUpdate(
       { _id: id },
       { nombreRuta, estado, repartidorId, vehiculoId, cantidadBotellas },
