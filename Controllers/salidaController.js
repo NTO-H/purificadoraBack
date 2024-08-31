@@ -193,6 +193,7 @@ function obtieneDiaActual() {
 exports.addSalida = async (req, res) => {
   try {
     const {
+      idPurificadora,
       nombreRuta,
       repartidorId,
       vehiculoId,
@@ -216,6 +217,7 @@ exports.addSalida = async (req, res) => {
     });
     // Crear una nueva instancia del modelo Ruta
     const nuevaRuta = new Salida({
+      idPurificadora,
       nombreRuta,
       repartidorId,
       vehiculoId,
